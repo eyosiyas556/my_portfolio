@@ -7,7 +7,7 @@ import CopyEmail from '@/components/CopyEmail';
 import RevealOnScroll from '@/components/RevealOnScroll';
 import { FaGithub, FaLinkedin, FaTelegram, FaInstagram } from 'react-icons/fa';
 
-export const instant = false;
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const profileRows = await query('SELECT * FROM profile LIMIT 1');
