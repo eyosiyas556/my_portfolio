@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import MapEmbed from '@/components/MapEmbed';
 import CopyEmail from '@/components/CopyEmail';
 import RevealOnScroll from '@/components/RevealOnScroll';
-import InstantUpload from '@/components/InstantUpload'; // <-- Imported here
+import LiveReload from '@/components/LiveReload';
 import { FaGithub, FaLinkedin, FaTelegram, FaInstagram } from 'react-icons/fa';
 
 export default async function Home() {
@@ -46,6 +46,7 @@ export default async function Home() {
 
       {/* Fixed Navbar */}
       <Navbar />
+      <LiveReload />
 
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-20 sm:pb-28 space-y-10 sm:space-y-16">
@@ -419,14 +420,7 @@ export default async function Home() {
           </RevealOnScroll>
         )}
 
-        {/* ── Instant Image Upload Section ──────────────────────── */}
-        <RevealOnScroll>
-          <section className="scroll-mt-28 pt-6">
-            <InstantUpload />
-          </section>
-        </RevealOnScroll>
-
-        {/* ── Contact & Map ────────────────────────────────────── */}
+{/* ── Contact & Map ────────────────────────────────────── */}
         <RevealOnScroll>
           <section id="contact" className="scroll-mt-28 space-y-6 sm:space-y-8 pt-10 sm:pt-12 border-t border-[var(--border)]">
             <div className="flex items-center justify-between flex-wrap gap-4">

@@ -128,8 +128,14 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Notify the portfolio page to refresh its server data
+  const broadcastRefresh = () => {
+    const channel = new BroadcastChannel('portfolio_updates');
+    channel.postMessage('refresh');
+    channel.close();
+  };
+
+  const handleLogin = (e: React.FormEvent) => {    e.preventDefault();
     if (password === 'eyosi@&123') {
       setIsAuthenticated(true);
       setError('');
@@ -233,6 +239,7 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error(data.error || 'Failed to update profile');
 
       setProfileStatus({ loading: false, success: 'Profile updated successfully!', error: '' });
+      broadcastRefresh();
     } catch (err: any) {
       setProfileStatus({ loading: false, success: '', error: err.message });
     }
@@ -253,6 +260,7 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error(data.error || 'Failed to update contact info');
 
       setContactStatus({ loading: false, success: 'Contact information updated successfully!', error: '' });
+      broadcastRefresh();
     } catch (err: any) {
       setContactStatus({ loading: false, success: '', error: err.message });
     }
@@ -280,6 +288,7 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error(data.error || 'Failed to save project');
 
       setSuccess(editingProjectId ? 'Project updated successfully!' : 'Project added successfully!');
+      broadcastRefresh();
       setForm({ title: '', slug: '', description: '', tech_stack: '', github_url: '', live_url: '', image_url: '' });
       setEditingProjectId(null);
       fetchData();
@@ -314,6 +323,7 @@ export default function AdminDashboard() {
         success: editingExperienceId ? 'Experience updated successfully!' : 'Experience added successfully!', 
         error: '' 
       });
+      broadcastRefresh();
       setExpForm({ role: '', company: '', period: '', description: '', type: 'Education' });
       setEditingExperienceId(null);
       fetchData();
@@ -399,6 +409,7 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error(data.error || 'Failed to add skill');
 
       setSkillStatus({ loading: false, success: 'Skill added successfully!', error: '' });
+      broadcastRefresh();
       setSkillForm({ name: '', category: 'Frontend', proficiency_level: 85 });
       fetchData();
     } catch (err: any) {
@@ -430,6 +441,7 @@ export default function AdminDashboard() {
         success: editingTestimonialId ? 'Recommendation updated successfully!' : 'Recommendation added successfully!', 
         error: '' 
       });
+      broadcastRefresh();
       setTestimonialForm({ quote: '', author: '', role: '', avatar: '' });
       setEditingTestimonialId(null);
       fetchData();
