@@ -74,26 +74,26 @@ export default function TypewriterTitle({ fullName, title }: TypewriterProps) {
     <div className="w-full flex flex-col justify-start space-y-1.5 md:space-y-2 h-auto md:h-[280px] overflow-hidden select-none pb-3 md:pb-0">
       {/* Line 1: Hey, */}
       <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-        <span className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-700 dark:from-amber-400 dark:via-yellow-200 dark:to-amber-500 bg-clip-text text-transparent drop-shadow-sm">
+        <span className="bg-gradient-to-r from-amber-700 via-amber-900 to-stone-900 dark:from-amber-400 dark:via-yellow-200 dark:to-amber-500 bg-clip-text text-transparent drop-shadow-sm">
           {text1}
         </span>
-        {step === 1 && <span className="animate-pulse text-amber-500 font-bold ml-1">|</span>}
+        {step === 1 && <span className="animate-pulse text-amber-600 dark:text-amber-500 font-bold ml-1">|</span>}
       </h1>
 
       {/* Line 2: I'm Name */}
       <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-        <span className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-700 dark:from-amber-400 dark:via-yellow-200 dark:to-amber-500 bg-clip-text text-transparent drop-shadow-sm">
+        <span className="bg-gradient-to-r from-amber-700 via-amber-900 to-stone-900 dark:from-amber-400 dark:via-yellow-200 dark:to-amber-500 bg-clip-text text-transparent drop-shadow-sm">
           {text2}
         </span>
-        {step === 2 && <span className="animate-pulse text-amber-500 font-bold ml-1">|</span>}
+        {step === 2 && <span className="animate-pulse text-amber-600 dark:text-amber-500 font-bold ml-1">|</span>}
       </h1>
 
       {/* Line 3: Title */}
       <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-        <span className="bg-gradient-to-r from-stone-700 via-amber-600 to-stone-900 dark:from-zinc-200 dark:via-amber-200 dark:to-zinc-400 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-stone-900 via-amber-800 to-stone-700 dark:from-zinc-200 dark:via-amber-200 dark:to-zinc-400 bg-clip-text text-transparent">
           {text3}
         </span>
-        {step === 3 && <span className="animate-pulse text-amber-500 font-bold ml-1">|</span>}
+        {step === 3 && <span className="animate-pulse text-amber-600 dark:text-amber-500 font-bold ml-1">|</span>}
       </h1>
     </div>
   );
