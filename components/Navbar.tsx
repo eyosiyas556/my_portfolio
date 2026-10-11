@@ -43,15 +43,15 @@ export default function Navbar() {
 
   const getMobileLinkClass = (section: string) => {
     const isActive = activeSection === section;
-    return `block text-sm font-semibold px-4 py-3 rounded-xl transition bg-[var(--bg)]/10 border border-[var(--border)]/15 ${
+    return `block text-sm font-semibold px-4 py-3 rounded-xl transition bg-[var(--bg)]/20 border border-[var(--border)]/20 ${
       isActive 
-        ? 'text-amber-500 dark:text-amber-400 border-amber-500/30 font-bold bg-[var(--bg)]/30' 
+        ? 'text-amber-500 dark:text-amber-400 border-amber-500/40 font-bold bg-[var(--bg)]/50' 
         : 'text-[var(--text-muted)] hover:text-amber-500'
     }`;
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-2xl transition-all duration-300 bg-[var(--bg)]/5 border-b border-[var(--border)]/10 shadow-sm py-2">
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-2xl transition-all duration-300 bg-[var(--bg)]/10 border-b border-[var(--border)]/15 shadow-sm py-2">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
         
         {/* Brand Logo with Gold Accent */}
@@ -113,7 +113,7 @@ export default function Navbar() {
           <ThemeToggle />
           <button 
             onClick={() => setIsOpen(!isOpen)} 
-            className="focus:outline-none p-2 rounded-xl border transition text-[var(--text-muted)] bg-[var(--bg-card)]/10 border-[var(--border)]/10 hover:text-amber-500 shadow-sm backdrop-blur-md"
+            className="focus:outline-none p-2.5 rounded-xl border transition text-[var(--text-muted)] bg-[var(--bg-card)]/20 border-[var(--border)]/20 hover:text-amber-500 shadow-sm backdrop-blur-md"
             aria-label="Toggle Menu"
           >
             <svg className="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
@@ -127,9 +127,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Dropdown Menu (Enhanced visibility and glassmorphism) */}
       {isOpen && (
-        <div className="md:hidden backdrop-blur-3xl border-b px-4 py-4 space-y-2 shadow-2xl animate-in slide-in-from-top duration-300 bg-[var(--bg-card)]/40 border-[var(--border)]/20">
+        <div className="md:hidden backdrop-blur-3xl border-b px-5 py-5 space-y-2.5 shadow-2xl animate-in slide-in-from-top duration-300 bg-[var(--bg-card)]/90 border-[var(--border)]/30">
           <a href="#about" onClick={() => setIsOpen(false)} className={getMobileLinkClass('about')}>
             About Me
           </a>
@@ -148,8 +148,8 @@ export default function Navbar() {
           <a href="#contact" onClick={() => setIsOpen(false)} className={getMobileLinkClass('contact')}>
             Get In Touch
           </a>
-          <div className="pt-2 flex items-center gap-2">
-            <a href="/admin" onClick={() => setIsOpen(false)} className="flex items-center justify-center px-4 py-3 rounded-xl border transition text-sm font-semibold text-[var(--text-muted)] border-[var(--border)]/15 hover:text-amber-500 bg-[var(--bg)]/10 backdrop-blur-md">
+          <div className="pt-3 flex items-center gap-2.5 border-t border-[var(--border)]/20">
+            <a href="/admin" onClick={() => setIsOpen(false)} className="flex items-center justify-center px-4 py-3 rounded-xl border transition text-sm font-semibold text-[var(--text-muted)] border-[var(--border)]/30 hover:text-amber-500 bg-[var(--bg)]/20 backdrop-blur-md">
               Admin
             </a>
             <a href="#contact" onClick={() => setIsOpen(false)} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-center text-xs shadow-md">
