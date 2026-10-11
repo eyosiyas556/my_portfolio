@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { query } from '@/lib/db';
 import ContactForm from '@/components/ContactForm';
 import TypewriterTitle from '@/components/TypewriterTitle';
@@ -7,9 +8,11 @@ import CopyEmail from '@/components/CopyEmail';
 import RevealOnScroll from '@/components/RevealOnScroll';
 import { FaGithub, FaLinkedin, FaTelegram, FaInstagram } from 'react-icons/fa';
 
-export const dynamic = 'force-dynamic';
+//export const dynamic = 'force-dynamic';
 
 export default async function Home() {
+  await connection();
+
   const profileRows = await query('SELECT * FROM profile LIMIT 1');
   const profile = profileRows[0] || {};
 
@@ -507,6 +510,7 @@ export default async function Home() {
             <span className="font-extrabold text-sm tracking-wider bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
               EYOSIYAS<span className="text-amber-500">.</span>
             </span>
+
             <span className="hidden sm:block text-[var(--text-faint)]">|</span>
             <span className="hidden sm:block text-[11px] font-mono text-[var(--text-muted)]">Full-Stack Dev · ASTU</span>
           </div>
