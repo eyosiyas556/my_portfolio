@@ -1,25 +1,23 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 
-const ADMIN_PASSWORD = 'eyosi@&123';
-
-// GET: Fetch all skills
 export async function GET() {
   try {
-    const skills = await query('SELECT * FROM skills ORDER BY category, proficiency_level DESC');
+    const skills = await prisma.skill.findMany({
+      orderBy: [{ category: 'asc' }, { proficiency_level: 'desc' }],
+    });
     return NextResponse.json(skills);
   } catch (error) {
-    console.error('Error fetching skills:', error);
+    console.error('Skills GET error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-// POST: Add a new skill (Password Protected)
 export async function POST(request: Request) {
   try {
     const { name, category, proficiency_level, password } = await request.json();
 
-    if (password !== ADMIN_PASSWORD) {
+    if (password !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: 'Unauthorized: Invalid password' }, { status: 401 });
     }
 
@@ -27,19 +25,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    await query(
-      'INSERT INTO skills (name, category, proficiency_level) VALUES ($1, $2, $3)',
-      [name, category, proficiency_level]
-    );
+    await prisma.skill.create({ data: { name, category, proficiency_level: Number(proficiency_level) } });
 
     return NextResponse.json({ success: true, message: 'Skill added successfully' });
   } catch (error) {
-    console.error('Error adding skill:', error);
+    console.error('Skills POST error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-// DELETE: Remove a skill by ID (Password Protected via query or body)
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -49,11 +43,11 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Skill ID is required' }, { status: 400 });
     }
 
-    await query('DELETE FROM skills WHERE id = $1', [id]);
+    await prisma.skill.delete({ where: { id: Number(id) } });
 
     return NextResponse.json({ success: true, message: 'Skill deleted successfully' });
   } catch (error) {
-    console.error('Error deleting skill:', error);
+    console.error('Skills DELETE error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

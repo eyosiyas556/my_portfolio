@@ -1,5 +1,5 @@
 import { connection } from 'next/server';
-import { query } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import ContactForm from '@/components/ContactForm';
 import TypewriterTitle from '@/components/TypewriterTitle';
 import Navbar from '@/components/Navbar';
@@ -9,31 +9,50 @@ import RevealOnScroll from '@/components/RevealOnScroll';
 import LiveReload from '@/components/LiveReload';
 import { FaGithub, FaLinkedin, FaTelegram, FaInstagram } from 'react-icons/fa';
 
+async function safeQuery<T>(queryFn: () => Promise<T>, fallback: T, retries = 2): Promise<T> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await queryFn();
+    } catch (error) {
+      if (attempt === retries) {
+        console.error('Database query fallback triggered:', error);
+        return fallback;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 700 * (attempt + 1)));
+    }
+  }
+  return fallback;
+}
+
 export default async function Home() {
   await connection();
 
-  const profileRows = await query('SELECT * FROM profile LIMIT 1');
-  const profile = profileRows[0] || {};
+  const [profile, contactInfo, experiences, projects, skills, testimonials] = await Promise.all([
+    safeQuery(() => prisma.profile.findFirst(), null),
+    safeQuery(() => prisma.contactInfo.findFirst(), null),
+    safeQuery(() => prisma.experience.findMany({ orderBy: { id: 'desc' } }), []),
+    safeQuery(() => prisma.project.findMany({ orderBy: { created_at: 'desc' } }), []),
+    safeQuery(() => prisma.skill.findMany({ orderBy: [{ category: 'asc' }, { proficiency_level: 'desc' }] }), []),
+    safeQuery(() => prisma.testimonial.findMany({ orderBy: { created_at: 'desc' } }), []),
+  ]);
 
-  const contactRows = await query('SELECT * FROM contact_info LIMIT 1');
-  const contactInfo = contactRows[0] || {
-    email: 'eyosiyas@example.com',
-    location: 'Adama, Ethiopia',
-    availability_status: 'Available for Opportunities',
-    phone: ''
+  const safeProfile = {
+    full_name: profile?.full_name ?? 'Eyosiyas Fisseha Birhanie',
+    title: profile?.title ?? 'Full-Stack Developer',
+    bio: profile?.bio ?? 'Driven software engineering student at ASTU specializing in full-stack web development and backend architecture. I build scalable, secure enterprise solutions and high-performance web applications designed to solve real-world problems and drive operational efficiency.',
+    profile_image_url: profile?.profile_image_url ?? null,
+    github_url: profile?.github_url ?? null,
+    linkedin_url: profile?.linkedin_url ?? null,
+    telegram_url: profile?.telegram_url ?? null,
+    instagram_url: profile?.instagram_url ?? null,
   };
 
-  const experiences = await query('SELECT * FROM experiences ORDER BY id DESC');
-  const projects = await query('SELECT * FROM projects ORDER BY created_at DESC');
-  const skills = await query('SELECT * FROM skills ORDER BY category, proficiency_level DESC');
-  
-  // Fetch testimonials directly from database
-  let testimonials: any[] = [];
-  try {
-    testimonials = await query('SELECT * FROM testimonials ORDER BY created_at DESC');
-  } catch {
-    testimonials = [];
-  }
+  const safeContact = {
+    email: contactInfo?.email ?? 'eyosiyas@example.com',
+    location: contactInfo?.location ?? 'Adama, Ethiopia',
+    availability_status: contactInfo?.availability_status ?? 'Available for Opportunities',
+    phone: contactInfo?.phone ?? '',
+  };
 
   const groupedSkills: { [key: string]: any[] } = skills.reduce((acc: any, skill: any) => {
     if (!acc[skill.category]) acc[skill.category] = [];
@@ -66,19 +85,19 @@ export default async function Home() {
             <div className="space-y-4 md:space-y-0">
               <div className="w-full text-[var(--text)] flex justify-center md:justify-start relative z-10">
                 <TypewriterTitle
-                  fullName={profile.full_name || 'Eyosiyas Fisseha Birhanie'}
-                  title={profile.title || 'Full-Stack Developer'}
+                  fullName={safeProfile.full_name || 'Eyosiyas Fisseha Birhanie'}
+                  title={safeProfile.title || 'Full-Stack Developer'}
                 />
               </div>
 
-              {profile.profile_image_url && (
+              {safeProfile.profile_image_url && (
                 <div className="md:hidden relative pt-2 pb-2 flex flex-col items-center justify-center space-y-3 z-10">
                   <div className="relative">
                     <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-3xl blur-xl opacity-20 animate-pulse"></div>
                     <div className="relative w-40 h-40 sm:w-52 sm:h-52 rounded-3xl overflow-hidden border-2 border-amber-500/50 shadow-xl group bg-[var(--bg-card)]">
                       <img
-                        src={profile.profile_image_url}
-                        alt={profile.full_name || 'Eyosiyas'}
+                        src={safeProfile.profile_image_url}
+                        alt={safeProfile.full_name || 'Eyosiyas'}
                         className="w-full h-full object-cover object-top group-hover:scale-110 transition duration-700 ease-out"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)]/70 via-transparent to-transparent"></div>
@@ -94,26 +113,26 @@ export default async function Home() {
 
                   {/* Social Icons Under Profile Picture (Mobile) */}
                   <div className="flex items-center justify-center gap-3.5 pt-1">
-                    {profile.github_url && (
-                      <a href={profile.github_url} target="_blank" aria-label="GitHub"
+                    {safeProfile.github_url && (
+                      <a href={safeProfile.github_url} target="_blank" aria-label="GitHub"
                         className="p-2.5 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-amber-600 dark:hover:text-amber-400 shadow-sm">
                         <FaGithub className="w-4 h-4" />
                       </a>
                     )}
-                    {profile.linkedin_url && (
-                      <a href={profile.linkedin_url} target="_blank" aria-label="LinkedIn"
+                    {safeProfile.linkedin_url && (
+                      <a href={safeProfile.linkedin_url} target="_blank" aria-label="LinkedIn"
                         className="p-2.5 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-[#0A66C2] shadow-sm">
                         <FaLinkedin className="w-4 h-4" />
                       </a>
                     )}
-                    {profile.telegram_url && (
-                      <a href={profile.telegram_url} target="_blank" aria-label="Telegram"
+                    {safeProfile.telegram_url && (
+                      <a href={safeProfile.telegram_url} target="_blank" aria-label="Telegram"
                         className="p-2.5 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-[#229ED9] shadow-sm">
                         <FaTelegram className="w-4 h-4" />
                       </a>
                     )}
-                    {profile.instagram_url && (
-                      <a href={profile.instagram_url} target="_blank" aria-label="Instagram"
+                    {safeProfile.instagram_url && (
+                      <a href={safeProfile.instagram_url} target="_blank" aria-label="Instagram"
                         className="p-2.5 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-[#E4405F] shadow-sm">
                         <FaInstagram className="w-4 h-4" />
                       </a>
@@ -124,19 +143,19 @@ export default async function Home() {
             </div>
 
             <p className="text-sm sm:text-lg max-w-2xl leading-relaxed text-[var(--text-muted)] font-medium px-2 md:px-0 pt-2">
-              {profile.bio || 'Driven software engineering student at ASTU specializing in full-stack web development and backend architecture. I build scalable, secure enterprise solutions and high-performance web applications designed to solve real-world problems and drive operational efficiency.'}
+              {safeProfile.bio || 'Driven software engineering student at ASTU specializing in full-stack web development and backend architecture. I build scalable, secure enterprise solutions and high-performance web applications designed to solve real-world problems and drive operational efficiency.'}
             </p>
           </div>
 
           {/* DESKTOP ONLY: Profile Picture + Clean Gap + Social Icons right beneath it */}
-          {profile.profile_image_url && (
+          {safeProfile.profile_image_url && (
             <div className="hidden md:flex shrink-0 flex-col items-center justify-center pt-4 md:pt-0">
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-3xl blur-xl opacity-20 animate-pulse"></div>
                 <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-3xl overflow-hidden border-2 border-amber-500/50 shadow-xl group bg-[var(--bg-card)]">
                   <img
-                    src={profile.profile_image_url}
-                    alt={profile.full_name || 'Eyosiyas'}
+                    src={safeProfile.profile_image_url}
+                    alt={safeProfile.full_name || 'Eyosiyas'}
                     className="w-full h-full object-cover object-top group-hover:scale-110 transition duration-700 ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)]/70 via-transparent to-transparent"></div>
@@ -152,26 +171,26 @@ export default async function Home() {
 
               {/* Desktop Social Icons with professional gap from picture */}
               <div className="flex items-center gap-3.5 pt-5">
-                {profile.github_url && (
-                  <a href={profile.github_url} target="_blank" aria-label="GitHub"
+                {safeProfile.github_url && (
+                  <a href={safeProfile.github_url} target="_blank" aria-label="GitHub"
                     className="p-3 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-amber-600 dark:hover:text-amber-400 shadow-sm">
                     <FaGithub className="w-5 h-5" />
                   </a>
                 )}
-                {profile.linkedin_url && (
-                  <a href={profile.linkedin_url} target="_blank" aria-label="LinkedIn"
+                {safeProfile.linkedin_url && (
+                  <a href={safeProfile.linkedin_url} target="_blank" aria-label="LinkedIn"
                     className="p-3 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-[#0A66C2] shadow-sm">
                     <FaLinkedin className="w-5 h-5" />
                   </a>
                 )}
-                {profile.telegram_url && (
-                  <a href={profile.telegram_url} target="_blank" aria-label="Telegram"
+                {safeProfile.telegram_url && (
+                  <a href={safeProfile.telegram_url} target="_blank" aria-label="Telegram"
                     className="p-3 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-[#229ED9] shadow-sm">
                     <FaTelegram className="w-5 h-5" />
                   </a>
                 )}
-                {profile.instagram_url && (
-                  <a href={profile.instagram_url} target="_blank" aria-label="Instagram"
+                {safeProfile.instagram_url && (
+                  <a href={safeProfile.instagram_url} target="_blank" aria-label="Instagram"
                     className="p-3 rounded-xl border transition-all duration-300 hover:scale-110 bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)] hover:text-[#E4405F] shadow-sm">
                     <FaInstagram className="w-5 h-5" />
                   </a>
@@ -436,7 +455,7 @@ export default async function Home() {
 
               <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-mono shadow-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                {contactInfo.availability_status || 'Available for Opportunities'}
+                {safeContact.availability_status || 'Available for Opportunities'}
               </div>
             </div>
 
@@ -454,18 +473,18 @@ export default async function Home() {
                     <span className="text-amber-600 dark:text-amber-400 text-sm">📧</span>
                     <div className="truncate flex-1">
                       <p className="text-[9px] uppercase font-mono text-[var(--text-faint)] font-semibold">Email</p>
-                      <a href={`mailto:${contactInfo.email}`} className="text-xs font-medium truncate transition text-[var(--text)] hover:text-amber-600 dark:hover:text-amber-400">
-                        {contactInfo.email}
+                      <a href={`mailto:${safeContact.email}`} className="text-xs font-medium truncate transition text-[var(--text)] hover:text-amber-600 dark:hover:text-amber-400">
+                        {safeContact.email}
                       </a>
                     </div>
-                    <CopyEmail email={contactInfo.email} />
+                    <CopyEmail email={safeContact.email} />
                   </div>
 
                   <div className="flex items-center gap-2.5 p-3 rounded-xl border bg-[var(--bg)] border-[var(--border)] shadow-sm">
                     <span className="text-amber-600 dark:text-amber-400 text-sm">📍</span>
                     <div>
                       <p className="text-[9px] uppercase font-mono text-[var(--text-faint)] font-semibold">Location</p>
-                      <p className="text-xs font-medium text-[var(--text)]">{contactInfo.location}</p>
+                      <p className="text-xs font-medium text-[var(--text)]">{safeContact.location}</p>
                     </div>
                   </div>
                 </div>
@@ -477,12 +496,12 @@ export default async function Home() {
 
               {/* Right: Map Embed Component (Hidden on mobile via `hidden lg:flex`, fully visible on desktop) */}
               <div className="hidden lg:flex lg:col-span-5 relative rounded-2xl overflow-hidden border transition-all duration-300 group min-h-[300px] sm:min-h-[320px] border-[var(--border)] hover:border-amber-500/40 shadow-lg bg-[var(--bg-card)] flex-col justify-between">
-                <MapEmbed location={contactInfo.location} />
+                <MapEmbed location={safeContact.location} />
 
                 <div className="relative z-10 p-3 sm:p-4 pointer-events-none flex justify-between items-start">
                   <div className="bg-[var(--bg-card)]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[var(--border)] shadow-md">
                     <h3 className="text-xs font-bold text-[var(--text)]">Based In</h3>
-                    <p className="text-[10px] text-[var(--text-muted)]">{contactInfo.location}</p>
+                    <p className="text-[10px] text-[var(--text-muted)]">{safeContact.location}</p>
                   </div>
                   <span className="px-2.5 py-1 rounded-xl backdrop-blur-md text-[10px] font-mono font-semibold text-amber-700 dark:text-amber-400 bg-[var(--bg-card)]/90 border border-[var(--border)] shadow-md">
                     Ethiopia
@@ -527,26 +546,26 @@ export default async function Home() {
           </nav>
 
           <div className="flex items-center justify-center sm:justify-end gap-3">
-            {profile.github_url && (
-              <a href={profile.github_url} target="_blank" aria-label="GitHub"
+            {safeProfile.github_url && (
+              <a href={safeProfile.github_url} target="_blank" aria-label="GitHub"
                 className="transition-all duration-200 hover:scale-110 text-[var(--text-muted)] hover:text-[var(--text)]">
                 <FaGithub className="w-4 h-4" />
               </a>
             )}
-            {profile.linkedin_url && (
-              <a href={profile.linkedin_url} target="_blank" aria-label="LinkedIn"
+            {safeProfile.linkedin_url && (
+              <a href={safeProfile.linkedin_url} target="_blank" aria-label="LinkedIn"
                 className="transition-all duration-200 hover:scale-110 text-[var(--text-muted)] hover:text-[#0A66C2]">
                 <FaLinkedin className="w-4 h-4" />
               </a>
             )}
-            {profile.telegram_url && (
-              <a href={profile.telegram_url} target="_blank" aria-label="Telegram"
+            {safeProfile.telegram_url && (
+              <a href={safeProfile.telegram_url} target="_blank" aria-label="Telegram"
                 className="transition-all duration-200 hover:scale-110 text-[var(--text-muted)] hover:text-[#229ED9]">
                 <FaTelegram className="w-4 h-4" />
               </a>
             )}
-            {profile.instagram_url && (
-              <a href={profile.instagram_url} target="_blank" aria-label="Instagram"
+            {safeProfile.instagram_url && (
+              <a href={safeProfile.instagram_url} target="_blank" aria-label="Instagram"
                 className="transition-all duration-200 hover:scale-110 text-[var(--text-muted)] hover:text-[#E4405F]">
                 <FaInstagram className="w-4 h-4" />
               </a>

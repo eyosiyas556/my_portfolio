@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const experiences = await query('SELECT * FROM experiences ORDER BY id DESC');
+    const experiences = await prisma.experience.findMany({ orderBy: { id: 'desc' } });
     return NextResponse.json(experiences);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    console.error('Experiences GET error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
   try {
     const { role, company, period, description, type, password } = await request.json();
 
-    if (password !== 'eyosi@&123') {
+    if (password !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -22,14 +23,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const result = await query(
-      'INSERT INTO experiences (role, company, period, description, type) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [role, company, period, description, type || 'Education']
-    );
+    const experience = await prisma.experience.create({
+      data: { role, company, period, description, type: type ?? 'Education' },
+    });
 
-    return NextResponse.json(result[0] || { success: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(experience);
+  } catch (error) {
+    console.error('Experiences POST error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -37,18 +38,19 @@ export async function PUT(request: Request) {
   try {
     const { id, role, company, period, description, type, password } = await request.json();
 
-    if (password !== 'eyosi@&123') {
+    if (password !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const result = await query(
-      'UPDATE experiences SET role = $1, company = $2, period = $3, description = $4, type = $5 WHERE id = $6 RETURNING *',
-      [role, company, period, description, type, id]
-    );
+    const experience = await prisma.experience.update({
+      where: { id: Number(id) },
+      data: { role, company, period, description, type },
+    });
 
-    return NextResponse.json(result[0] || { success: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(experience);
+  } catch (error) {
+    console.error('Experiences PUT error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -58,13 +60,15 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id');
     const password = request.headers.get('x-admin-password');
 
-    if (password !== 'eyosi@&123') {
+    if (password !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await query('DELETE FROM experiences WHERE id = $1', [id]);
+    await prisma.experience.delete({ where: { id: Number(id) } });
+
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    console.error('Experiences DELETE error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

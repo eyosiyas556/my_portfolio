@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id                Int       @id @default(autoincrement())
+  full_name         String?
+  title             String?
+  bio               String?
+  profile_image_url String?
+  github_url        String?
+  linkedin_url      String?
+  telegram_url      String?
+  instagram_url     String?
+  updated_at        DateTime  @default(now()) @updatedAt
+
+  @@map("profile")
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String
+  description String
+  tech_stack  String[]
+  github_url  String?
+  live_url    String?
+  image_url   String?
+  featured    Boolean  @default(true)
+  created_at  DateTime @default(now())
+
+  @@map("projects")
+}
+
+model Skill {
+  id                Int    @id @default(autoincrement())
+  name              String
+  category          String
+  proficiency_level Int
+
+  @@map("skills")
+}
+
+model ContactInfo {
+  id                  Int     @id @default(autoincrement())
+  email               String?
+  location            String?
+  availability_status String?
+  phone               String?
+
+  @@map("contact_info")
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String
+  message    String
+  created_at DateTime @default(now())
+
+  @@map("messages")
+}
+
+model Experience {
+  id          Int    @id @default(autoincrement())
+  role        String
+  company     String
+  period      String
+  description String
+  type        String @default("Education")
+
+  @@map("experiences")
+}
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  quote      String
+  author     String
+  role       String
+  avatar     String   @default("")
+  created_at DateTime @default(now())
+
+  @@map("testimonials")
+}

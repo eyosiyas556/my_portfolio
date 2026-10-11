@@ -1,13 +1,10 @@
-import { Pool } from '@neondatabase/serverless';
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// Legacy query helper kept for page.tsx compatibility
+// All API routes now use lib/prisma.ts directly
+import { prisma } from './prisma';
 
 export async function query(text: string, params?: any[]) {
-  const client = await pool.connect();
-  try {
-    const res = await client.query(text, params);
-    return res.rows;
-  } finally {
-    client.release();
-  }
+  const result = await prisma.$queryRawUnsafe(text, ...(params ?? []));
+  return result as any[];
 }
+
+export { prisma };
