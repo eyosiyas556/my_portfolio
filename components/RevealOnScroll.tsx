@@ -4,22 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function RevealOnScroll({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   const [isVisible, setIsVisible] = useState(false);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // Cancel any pending hide — reveal immediately
-          if (hideTimer.current) clearTimeout(hideTimer.current);
           setIsVisible(true);
-        } else {
-          // Delay hiding by 600ms — prevents flicker during normal scrolling
-          // but resets properly when user jumps away via navbar
-          hideTimer.current = setTimeout(() => {
-            setIsVisible(false);
-          }, 600);
+          // Stop observing after first reveal — stays visible permanently
+          if (ref.current) observer.unobserve(ref.current);
         }
       },
       {
@@ -32,7 +25,6 @@ export default function RevealOnScroll({ children, className = '' }: { children:
 
     return () => {
       if (ref.current) observer.unobserve(ref.current);
-      if (hideTimer.current) clearTimeout(hideTimer.current);
     };
   }, []);
 
