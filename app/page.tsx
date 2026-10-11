@@ -6,9 +6,8 @@ import Navbar from '@/components/Navbar';
 import MapEmbed from '@/components/MapEmbed';
 import CopyEmail from '@/components/CopyEmail';
 import RevealOnScroll from '@/components/RevealOnScroll';
+import InstantUpload from '@/components/InstantUpload'; // <-- Imported here
 import { FaGithub, FaLinkedin, FaTelegram, FaInstagram } from 'react-icons/fa';
-
-//export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   await connection();
@@ -419,6 +418,13 @@ export default async function Home() {
             </section>
           </RevealOnScroll>
         )}
+
+        {/* ── Instant Image Upload Section ──────────────────────── */}
+        <RevealOnScroll>
+          <section className="scroll-mt-28 pt-6">
+            <InstantUpload />
+          </section>
+        </RevealOnScroll>
 
         {/* ── Contact & Map ────────────────────────────────────── */}
         <RevealOnScroll>
