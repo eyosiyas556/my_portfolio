@@ -19,18 +19,8 @@ export default function TypewriterTitle({ fullName, title }: TypewriterProps) {
   const [text2, setText2] = useState('');
   const [text3, setText3] = useState('');
   
-  const [step, setStep] = useState<1 | 2 | 3 | 'pausing' | 'done'>(1);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Detect mobile vs desktop client-side
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // Start right away with step 1, ending permanently at 'done'
+  const [step, setStep] = useState<1 | 2 | 3 | 'done'>(1);
 
   useEffect(() => {
     if (step === 'done') return;
@@ -53,41 +43,34 @@ export default function TypewriterTitle({ fullName, title }: TypewriterProps) {
       if (text3.length < line3.length) {
         timer = setTimeout(() => setText3(line3.slice(0, text3.length + 1)), 70);
       } else {
-        // Finished typing all lines
-        if (isMobile) {
-          setStep('done'); // Stop looping on mobile
-        } else {
-          timer = setTimeout(() => setStep('pausing'), 3500); // Wait 3.5s before restarting on desktop
-        }
+        setStep('done'); // Stops permanently after running once
       }
-    } else if (step === 'pausing') {
-      setText1('');
-      setText2('');
-      setText3('');
-      setStep(1);
     }
 
     return () => clearTimeout(timer);
-  }, [text1, text2, text3, step, line1, line2, line3, isMobile]);
+  }, [text1, text2, text3, step, line1, line2, line3]);
+
+  // Double drop-shadow style string for Tailwind
+  const attractiveShadow = "[filter:drop-shadow(0px_2px_2px_#b45309)_drop-shadow(0px_1px_1px_rgba(0,0,0,0.6))]";
 
   return (
     <div className="w-full flex flex-col justify-start space-y-1.5 md:space-y-2 h-auto md:h-[280px] overflow-hidden select-none pb-3 md:pb-0">
-      {/* Line 1: Hey, */}
-      <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-600 drop-shadow-sm">
+      {/* Line 1: Hey, (Golden with Double Shadow) */}
+      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-400 ${attractiveShadow}`}>
         <span>{text1}</span>
-        {step === 1 && <span className="animate-pulse text-amber-500 font-bold ml-1">|</span>}
+        {step === 1 && <span className="animate-pulse text-yellow-300 font-bold ml-1">|</span>}
       </h1>
 
-      {/* Line 2: I'm Name */}
-      <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-600 drop-shadow-sm">
+      {/* Line 2: I'm Name (Golden with Double Shadow) */}
+      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-400 ${attractiveShadow}`}>
         <span>{text2}</span>
-        {step === 2 && <span className="animate-pulse text-amber-500 font-bold ml-1">|</span>}
+        {step === 2 && <span className="animate-pulse text-yellow-300 font-bold ml-1">|</span>}
       </h1>
 
-      {/* Line 3: Title */}
-      <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-700 drop-shadow-sm">
+      {/* Line 3: Title (Slightly darker Golden with Double Shadow) */}
+      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-500 ${attractiveShadow}`}>
         <span>{text3}</span>
-        {step === 3 && <span className="animate-pulse text-amber-500 font-bold ml-1">|</span>}
+        {step === 3 && <span className="animate-pulse text-amber-400 font-bold ml-1">|</span>}
       </h1>
     </div>
   );

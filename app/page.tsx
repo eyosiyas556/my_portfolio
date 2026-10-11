@@ -239,7 +239,7 @@ export default async function Home() {
           </section>
         </RevealOnScroll>
 
-        {/* ── Projects ─────────────────────────────────────────── */}
+        {/* ── Projects (Crystal Clear Background Images) ─────── */}
         <RevealOnScroll>
           <section id="projects" className="scroll-mt-28 space-y-6 sm:space-y-8">
             <div className="flex items-center gap-3">
@@ -258,15 +258,15 @@ export default async function Home() {
                   key={project.id}
                   className="relative rounded-2xl overflow-hidden border transition-all duration-500 flex flex-col justify-between group min-h-[380px] sm:min-h-[400px] border-[var(--border)] hover:border-amber-500/50 hover:shadow-xl bg-[var(--bg-card)] shadow-md"
                 >
-                  {/* Background Project Image */}
+                  {/* Background Project Image - Crystal Clear (No Blur) */}
                   {project.image_url ? (
                     <div className="absolute inset-0 z-0">
                       <img
                         src={project.image_url}
                         alt={project.title}
-                        className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-1000 ease-out opacity-75 dark:opacity-45"
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-1000 ease-out opacity-100 dark:opacity-85"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)] via-[var(--bg-card)]/85 to-[var(--bg-card)]/40 backdrop-blur-[0.5px]"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)] via-[var(--bg-card)]/75 to-transparent"></div>
                     </div>
                   ) : (
                     <div className="absolute inset-0 z-0 bg-gradient-to-br from-[var(--bg-card)] via-[var(--bg)] to-amber-500/5"></div>
@@ -280,7 +280,7 @@ export default async function Home() {
                     </div>
 
                     <div className="space-y-2.5 pt-4 sm:pt-6">
-                      <h3 className="text-lg sm:text-2xl font-extrabold transition text-[var(--text)] group-hover:text-amber-600 dark:group-hover:text-amber-400 drop-shadow-sm">
+                      <h3 className="text-lg sm:text-2xl font-extrabold transition text-[var(--text)] group-hover:text-amber-600 dark:group-hover:text-amber-400 drop-shadow-md">
                         {project.title}
                       </h3>
                       <p className="text-xs sm:text-sm leading-relaxed max-h-28 sm:max-h-32 overflow-y-auto pr-1 text-[var(--text)] bg-[var(--bg-card)]/90 border border-[var(--border)] p-3 rounded-xl shadow-sm font-normal backdrop-blur-md">
@@ -420,7 +420,7 @@ export default async function Home() {
           </RevealOnScroll>
         )}
 
-        {/* ── Contact & Map ────────────────────────────────────── */}
+        {/* ── Contact & Map (Map Hidden on Mobile, Visible on Desktop) ── */}
         <RevealOnScroll>
           <section id="contact" className="scroll-mt-28 space-y-6 sm:space-y-8 pt-10 sm:pt-12 border-t border-[var(--border)]">
             <div className="flex items-center justify-between flex-wrap gap-4">
@@ -442,7 +442,7 @@ export default async function Home() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
 
-              {/* Left: Compact Contact Form Card */}
+              {/* Left: Contact Form Card (Spans full width on mobile, 7 cols on desktop) */}
               <div className="lg:col-span-7 rounded-2xl p-5 sm:p-7 space-y-5 shadow-lg flex flex-col justify-between transition-all duration-300 bg-[var(--bg-card)] border border-[var(--border)] hover:border-amber-500/40">
                 <div>
                   <h3 className="text-base font-bold mb-1 text-[var(--text)]">Send a Message</h3>
@@ -475,8 +475,8 @@ export default async function Home() {
                 </div>
               </div>
 
-              {/* Right: Map Embed Component with Theme-aware styling */}
-              <div className="lg:col-span-5 relative rounded-2xl overflow-hidden border transition-all duration-300 group min-h-[300px] sm:min-h-[320px] border-[var(--border)] hover:border-amber-500/40 shadow-lg bg-[var(--bg-card)] flex flex-col justify-between">
+              {/* Right: Map Embed Component (Hidden on mobile via `hidden lg:flex`, fully visible on desktop) */}
+              <div className="hidden lg:flex lg:col-span-5 relative rounded-2xl overflow-hidden border transition-all duration-300 group min-h-[300px] sm:min-h-[320px] border-[var(--border)] hover:border-amber-500/40 shadow-lg bg-[var(--bg-card)] flex-col justify-between">
                 <MapEmbed location={contactInfo.location} />
 
                 <div className="relative z-10 p-3 sm:p-4 pointer-events-none flex justify-between items-start">
