@@ -62,9 +62,9 @@ export default async function Home() {
               Software Engineering Student at ASTU
             </div>
 
-            {/* MOBILE ONLY: Title & Image + Socials grouped tightly together */}
-            <div className="space-y-3 md:space-y-0">
-              <div className="w-full text-[var(--text)] flex justify-center md:justify-start">
+            {/* MOBILE ONLY: Title first, then Image & Socials cleanly separated */}
+            <div className="space-y-4 md:space-y-0">
+              <div className="w-full text-[var(--text)] flex justify-center md:justify-start relative z-10">
                 <TypewriterTitle
                   fullName={profile.full_name || 'Eyosiyas Fisseha Birhanie'}
                   title={profile.title || 'Full-Stack Developer'}
@@ -72,7 +72,7 @@ export default async function Home() {
               </div>
 
               {profile.profile_image_url && (
-                <div className="md:hidden relative pt-1 pb-1 flex flex-col items-center justify-center space-y-3">
+                <div className="md:hidden relative pt-2 pb-2 flex flex-col items-center justify-center space-y-3 z-10">
                   <div className="relative">
                     <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-3xl blur-xl opacity-20 animate-pulse"></div>
                     <div className="relative w-40 h-40 sm:w-52 sm:h-52 rounded-3xl overflow-hidden border-2 border-amber-500/50 shadow-xl group bg-[var(--bg-card)]">
@@ -420,7 +420,7 @@ export default async function Home() {
           </RevealOnScroll>
         )}
 
-{/* ── Contact & Map ────────────────────────────────────── */}
+        {/* ── Contact & Map ────────────────────────────────────── */}
         <RevealOnScroll>
           <section id="contact" className="scroll-mt-28 space-y-6 sm:space-y-8 pt-10 sm:pt-12 border-t border-[var(--border)]">
             <div className="flex items-center justify-between flex-wrap gap-4">
