@@ -128,11 +128,18 @@ export default function AdminDashboard() {
     }
   };
 
-  // Notify the portfolio page to refresh its server data
+  // Notify the portfolio page to refresh its server data in real time
   const broadcastRefresh = () => {
-    const channel = new BroadcastChannel('portfolio_updates');
-    channel.postMessage('refresh');
-    channel.close();
+    try {
+      const channel = new BroadcastChannel('portfolio_updates');
+      channel.postMessage('refresh');
+      channel.close();
+    } catch (e) {
+      console.warn('BroadcastChannel error:', e);
+    }
+    try {
+      localStorage.setItem('portfolio_last_updated', Date.now().toString());
+    } catch (e) {}
   };
 
   const handleLogin = (e: React.FormEvent) => {    e.preventDefault();
@@ -162,8 +169,23 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload failed');
 
-      setProfileForm((prev) => ({ ...prev, profile_image_url: data.url }));
-      setProfileStatus({ loading: false, success: 'Image uploaded successfully! Click "Save Profile Changes" below.', error: '' });
+      const updatedProfile = { ...profileForm, profile_image_url: data.url };
+      setProfileForm(updatedProfile);
+
+      // Auto-save immediately to database so the change reflects live in real-time
+      const saveRes = await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...updatedProfile, password }),
+      });
+
+      if (!saveRes.ok) {
+        const saveErr = await saveRes.json();
+        throw new Error(saveErr.error || 'Failed to auto-save profile image');
+      }
+
+      setProfileStatus({ loading: false, success: 'Profile picture uploaded & updated live in real time!', error: '' });
+      broadcastRefresh();
     } catch (err: any) {
       setProfileStatus({ loading: false, success: '', error: err.message });
     } finally {
@@ -352,6 +374,7 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         setExperiences(experiences.filter(e => e.id !== id));
+        broadcastRefresh();
       } else {
         alert('Failed to delete experience.');
       }
@@ -385,6 +408,7 @@ export default function AdminDashboard() {
 
       if (res.ok) {
         setProjects(projects.filter(p => p.id !== id));
+        broadcastRefresh();
       } else {
         alert('Failed to delete project.');
       }
@@ -469,6 +493,7 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         setTestimonials(testimonials.filter(t => t.id !== id));
+        broadcastRefresh();
       } else {
         alert('Failed to delete recommendation.');
       }
@@ -502,6 +527,7 @@ export default function AdminDashboard() {
 
       if (res.ok) {
         setSkills(skills.filter(s => s.id !== id));
+        broadcastRefresh();
       } else {
         alert('Failed to delete skill.');
       }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyChange } from '@/lib/updated';
 
 export async function GET() {
   try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
       data: { quote, author, role, avatar: avatar ?? '' },
     });
 
+    notifyChange();
     return NextResponse.json(testimonial);
   } catch (error) {
     console.error('Testimonials POST error:', error);
@@ -51,6 +53,7 @@ export async function PUT(request: Request) {
       data: { quote, author, role, avatar: avatar ?? '' },
     });
 
+    notifyChange();
     return NextResponse.json(testimonial);
   } catch (error) {
     console.error('Testimonials PUT error:', error);
@@ -74,6 +77,7 @@ export async function DELETE(request: Request) {
 
     await prisma.testimonial.delete({ where: { id: Number(id) } });
 
+    notifyChange();
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Testimonials DELETE error:', error);

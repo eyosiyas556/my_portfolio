@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyChange } from '@/lib/updated';
 
 export async function GET() {
   try {
@@ -29,6 +30,7 @@ export async function POST(request: Request) {
       await prisma.profile.create({ data });
     }
 
+    notifyChange();
     return NextResponse.json({ success: true, message: 'Profile updated successfully!' });
   } catch (error) {
     console.error('Profile POST error:', error);

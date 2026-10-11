@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
+import { writeFile, mkdir } from 'fs/promises';
+import path from 'path';
 import { put } from '@vercel/blob';
+import { notifyChange } from '@/lib/updated';
 
 export async function POST(request: Request) {
   try {
@@ -18,17 +21,39 @@ export async function POST(request: Request) {
     // Create unique filename to prevent overwriting
     const filename = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
 
-    // Upload to Vercel Blob cloud storage
-    const blob = await put(filename, file, {
-      access: 'public',
-    });
+    let imageUrl = '';
 
-    return NextResponse.json({ 
-      success: true, 
-      url: blob.url 
+    // If Vercel Blob token is configured, use cloud storage
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(filename, file, {
+        access: 'public',
+      });
+      imageUrl = blob.url;
+    } else {
+      // Local development fallback: save to public/uploads
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const uploadDir = path.join(process.cwd(), 'public/uploads');
+
+      try {
+        await mkdir(uploadDir, { recursive: true });
+      } catch (err) {
+        // Directory already exists
+      }
+
+      const filepath = path.join(uploadDir, filename);
+      await writeFile(filepath, buffer);
+      imageUrl = `/uploads/${filename}`;
+    }
+
+    notifyChange();
+
+    return NextResponse.json({
+      success: true,
+      url: imageUrl,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Failed to upload image' }, { status: 500 });
   }
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyChange } from '@/lib/updated';
 
 export async function GET() {
   try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
 
     await prisma.skill.create({ data: { name, category, proficiency_level: Number(proficiency_level) } });
 
+    notifyChange();
     return NextResponse.json({ success: true, message: 'Skill added successfully' });
   } catch (error) {
     console.error('Skills POST error:', error);
@@ -45,6 +47,7 @@ export async function DELETE(request: Request) {
 
     await prisma.skill.delete({ where: { id: Number(id) } });
 
+    notifyChange();
     return NextResponse.json({ success: true, message: 'Skill deleted successfully' });
   } catch (error) {
     console.error('Skills DELETE error:', error);

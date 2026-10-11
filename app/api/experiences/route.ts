@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyChange } from '@/lib/updated';
 
 export async function GET() {
   try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
       data: { role, company, period, description, type: type ?? 'Education' },
     });
 
+    notifyChange();
     return NextResponse.json(experience);
   } catch (error) {
     console.error('Experiences POST error:', error);
@@ -47,6 +49,7 @@ export async function PUT(request: Request) {
       data: { role, company, period, description, type },
     });
 
+    notifyChange();
     return NextResponse.json(experience);
   } catch (error) {
     console.error('Experiences PUT error:', error);
@@ -66,6 +69,7 @@ export async function DELETE(request: Request) {
 
     await prisma.experience.delete({ where: { id: Number(id) } });
 
+    notifyChange();
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Experiences DELETE error:', error);

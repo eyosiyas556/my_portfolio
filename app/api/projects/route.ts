@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyChange } from '@/lib/updated';
 
 export async function GET() {
   try {
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
       data: { title, slug, description, tech_stack: techArray, github_url, live_url, image_url, featured: true },
     });
 
+    notifyChange();
     return NextResponse.json({ success: true, message: 'Project added successfully!', project }, { status: 201 });
   } catch (error) {
     console.error('Projects POST error:', error);
@@ -59,6 +61,7 @@ export async function PUT(request: Request) {
       data: { title, slug, description, tech_stack: techArray, github_url, live_url, image_url },
     });
 
+    notifyChange();
     return NextResponse.json({ success: true, message: 'Project updated successfully!' });
   } catch (error) {
     console.error('Projects PUT error:', error);
@@ -82,6 +85,7 @@ export async function DELETE(request: Request) {
 
     await prisma.project.delete({ where: { id: Number(id) } });
 
+    notifyChange();
     return NextResponse.json({ success: true, message: 'Project deleted successfully!' });
   } catch (error) {
     console.error('Projects DELETE error:', error);

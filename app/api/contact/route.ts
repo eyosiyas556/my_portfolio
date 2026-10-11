@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyChange } from '@/lib/updated';
 
 const DEFAULT_CONTACT = {
   email: 'eyosiyas@example.com',
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
       await prisma.contactInfo.create({ data });
     }
 
+    notifyChange();
     return NextResponse.json({ success: true, message: 'Contact info updated successfully!' });
   } catch (error) {
     console.error('Contact POST error:', error);
