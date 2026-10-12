@@ -19,8 +19,9 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
       className="p-2 rounded-xl border transition-all duration-300 group
         bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-muted)]
-        hover:border-amber-500/50 hover:text-amber-500 hover:bg-amber-500/10
-        hover:shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+        hover:border-[#222222]/40 hover:text-[#222222] hover:bg-[#222222]/5
+        dark:hover:border-[#f4f4f5]/40 dark:hover:text-[#f4f4f5] dark:hover:bg-[#f4f4f5]/10
+        dark:hover:shadow-[0_0_15px_rgba(244,244,245,0.15)]"
     >
       {isDark ? (
         <svg className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

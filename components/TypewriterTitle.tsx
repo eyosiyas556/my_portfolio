@@ -50,27 +50,27 @@ export default function TypewriterTitle({ fullName, title }: TypewriterProps) {
     return () => clearTimeout(timer);
   }, [text1, text2, text3, step, line1, line2, line3]);
 
-  // Double drop-shadow style string for Tailwind
-  const attractiveShadow = "[filter:drop-shadow(0px_2px_2px_#b45309)_drop-shadow(0px_1px_1px_rgba(0,0,0,0.6))]";
+  // Double drop-shadow style string for Tailwind dark mode
+  const attractiveShadow = "dark:[filter:drop-shadow(0px_2px_4px_rgba(0,0,0,0.8))]";
 
   return (
     <div className="w-full flex flex-col justify-start space-y-1.5 md:space-y-2 h-auto md:h-[280px] overflow-hidden select-none pb-3 md:pb-0">
-      {/* Line 1: Hey, (Golden with Double Shadow) */}
-      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-400 ${attractiveShadow}`}>
+      {/* Line 1: Hey, */}
+      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-[#222222] dark:text-[#f4f4f5] ${attractiveShadow}`}>
         <span>{text1}</span>
-        {step === 1 && <span className="animate-pulse text-yellow-300 font-bold ml-1">|</span>}
+        {step === 1 && <span className="animate-pulse text-[#222222] dark:text-[#f4f4f5] font-bold ml-1">|</span>}
       </h1>
 
-      {/* Line 2: I'm Name (Golden with Double Shadow) */}
-      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-400 ${attractiveShadow}`}>
+      {/* Line 2: I'm Name */}
+      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-[#222222] dark:text-[#f4f4f5] ${attractiveShadow}`}>
         <span>{text2}</span>
-        {step === 2 && <span className="animate-pulse text-yellow-300 font-bold ml-1">|</span>}
+        {step === 2 && <span className="animate-pulse text-[#222222] dark:text-[#f4f4f5] font-bold ml-1">|</span>}
       </h1>
 
-      {/* Line 3: Title (Slightly darker Golden with Double Shadow) */}
-      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-amber-500 ${attractiveShadow}`}>
+      {/* Line 3: Title */}
+      <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-[#222222] dark:text-[#f4f4f5] ${attractiveShadow}`}>
         <span>{text3}</span>
-        {step === 3 && <span className="animate-pulse text-amber-400 font-bold ml-1">|</span>}
+        {step === 3 && <span className="animate-pulse text-[#222222] dark:text-[#f4f4f5] font-bold ml-1">|</span>}
       </h1>
     </div>
   );

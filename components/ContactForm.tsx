@@ -50,7 +50,7 @@ export default function ContactForm() {
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full rounded-xl px-4 py-3 text-sm border transition-all duration-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 bg-[var(--bg)] border-[var(--border)] text-[var(--text)] placeholder-[var(--text-faint)] shadow-sm"
+          className="w-full rounded-xl px-4 py-3 text-sm border transition-all duration-200 focus:outline-none focus:border-[#222222] focus:ring-2 focus:ring-[#222222]/20 dark:focus:border-[#f4f4f5] dark:focus:ring-2 dark:focus:ring-[#f4f4f5]/20 bg-[var(--bg)] border-[var(--border)] text-[var(--text)] placeholder-[var(--text-faint)] shadow-sm"
           placeholder="Eyosiyas"
         />
       </div>
@@ -64,7 +64,7 @@ export default function ContactForm() {
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full rounded-xl px-4 py-3 text-sm border transition-all duration-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 bg-[var(--bg)] border-[var(--border)] text-[var(--text)] placeholder-[var(--text-faint)] shadow-sm"
+          className="w-full rounded-xl px-4 py-3 text-sm border transition-all duration-200 focus:outline-none focus:border-[#222222] focus:ring-2 focus:ring-[#222222]/20 dark:focus:border-[#f4f4f5] dark:focus:ring-2 dark:focus:ring-[#f4f4f5]/20 bg-[var(--bg)] border-[var(--border)] text-[var(--text)] placeholder-[var(--text-faint)] shadow-sm"
           placeholder="eyosiyas@example.com"
         />
       </div>
@@ -78,7 +78,7 @@ export default function ContactForm() {
           rows={4}
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          className="w-full rounded-xl px-4 py-3 text-sm border transition-all duration-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 resize-none bg-[var(--bg)] border-[var(--border)] text-[var(--text)] placeholder-[var(--text-faint)] shadow-sm"
+          className="w-full rounded-xl px-4 py-3 text-sm border transition-all duration-200 focus:outline-none focus:border-[#222222] focus:ring-2 focus:ring-[#222222]/20 dark:focus:border-[#f4f4f5] dark:focus:ring-2 dark:focus:ring-[#f4f4f5]/20 resize-none bg-[var(--bg)] border-[var(--border)] text-[var(--text)] placeholder-[var(--text-faint)] shadow-sm"
           placeholder="Let's build something great together..."
         />
       </div>
@@ -86,7 +86,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status.loading}
-        className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-50 bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 hover:opacity-90 hover:shadow-lg hover:shadow-amber-500/20 shadow-md"
+        className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-50 bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white dark:hover:opacity-95 hover:shadow-lg shadow-md dark:shadow-black/20"
       >
         {status.loading ? 'Sending...' : <><Send className="w-4 h-4" /> Send Message</>}
       </button>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function AdminDashboard() {
   const [password, setPassword] = useState('');
@@ -539,9 +540,12 @@ export default function AdminDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex items-center justify-center p-4 transition-colors duration-300">
-        <form onSubmit={handleLogin} className="bg-[var(--bg-card)] border border-[var(--border)] p-8 rounded-2xl w-full max-w-sm space-y-4 shadow-xl">
-          <h1 className="text-xl font-bold text-amber-500 dark:text-amber-400">Portfolio Admin Login</h1>
+      <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex items-center justify-center p-4 transition-colors duration-300 relative">
+        <div className="absolute top-6 right-6">
+          <ThemeToggle />
+        </div>
+        <form onSubmit={handleLogin} className="bg-[var(--bg-card)] border border-[var(--border)] p-8 rounded-2xl w-full max-w-sm space-y-4 shadow-md dark:shadow-none">
+          <h1 className="text-xl font-extrabold text-[#222222] dark:text-[#f4f4f5]">Portfolio Admin Login</h1>
           <p className="text-xs text-[var(--text-muted)]">Enter your admin password to manage your portfolio.</p>
           {error && <p className="text-xs text-rose-500">{error}</p>}
           <input 
@@ -549,10 +553,10 @@ export default function AdminDashboard() {
             placeholder="Admin Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+            className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
             required
           />
-          <button type="submit" className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20">
+          <button type="submit" className="w-full py-2.5 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none">
             Access Dashboard
           </button>
         </form>
@@ -568,17 +572,17 @@ export default function AdminDashboard() {
         
         <div className="flex justify-between items-center border-b border-[var(--border)] pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-amber-500 dark:text-amber-400">Admin Dashboard</h1>
+            <h1 className="text-2xl font-extrabold text-[#222222] dark:text-[#f4f4f5]">Admin Dashboard</h1>
             <p className="text-xs text-[var(--text-muted)]">Manage Eyosiyas&apos;s Portfolio, Timeline & Projects</p>
           </div>
-          <a href="/" className="text-xs text-[var(--text-muted)] hover:text-amber-500 underline">← Back to Portfolio</a>
+          <a href="/" className="text-xs text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] transition underline">← Back to Portfolio</a>
         </div>
 
         {/* Visitor Messages */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-xl">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-[var(--text)]">Visitor Messages</h2>
-            <span className="text-xs bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-2.5 py-1 rounded-full font-mono font-semibold">
+            <h2 className="text-lg font-bold text-[var(--text)]">Visitor Messages</h2>
+            <span className="text-xs bg-[#222222]/5 text-[#222222] border border-[#222222]/20 dark:bg-[#f4f4f5]/10 dark:text-[#f4f4f5] dark:border-[#f4f4f5]/30 px-2.5 py-1 rounded-full font-mono font-semibold">
               {messages.length} message{messages.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -594,7 +598,7 @@ export default function AdminDashboard() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm font-semibold text-[var(--text)]">{msg.name}</p>
-                      <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">{msg.email}</p>
+                      <p className="text-xs text-[var(--text-muted)] font-mono mt-0.5">{msg.email}</p>
                       {msg.created_at && (
                         <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{new Date(msg.created_at).toLocaleString()}</p>
                       )}
@@ -614,8 +618,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* Profile & Socials Management Form */}
-        <form onSubmit={handleUpdateProfile} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-xl">
-          <h2 className="text-lg font-semibold text-[var(--text)]">Manage Profile & Social Links</h2>
+        <form onSubmit={handleUpdateProfile} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
+          <h2 className="text-lg font-bold text-[var(--text)]">Manage Profile & Social Links</h2>
           
           {profileStatus.success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{profileStatus.success}</div>}
           {profileStatus.error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">{profileStatus.error}</div>}
@@ -628,7 +632,7 @@ export default function AdminDashboard() {
                 required
                 value={profileForm.full_name}
                 onChange={(e) => setProfileForm({ ...profileForm, full_name: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
             <div>
@@ -638,7 +642,7 @@ export default function AdminDashboard() {
                 required
                 value={profileForm.title}
                 onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
           </div>
@@ -650,7 +654,7 @@ export default function AdminDashboard() {
               rows={3}
               value={profileForm.bio}
               onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500 resize-none"
+              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition resize-none"
             />
           </div>
 
@@ -670,9 +674,9 @@ export default function AdminDashboard() {
                   accept="image/*"
                   onChange={handleImageUpload}
                   disabled={uploading}
-                  className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-zinc-950 hover:file:opacity-90 cursor-pointer disabled:opacity-50"
+                  className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#222222] file:text-white dark:file:bg-[#f4f4f5] dark:file:text-[#1d1f1e] file:transition-all hover:file:opacity-90 cursor-pointer disabled:opacity-50"
                 />
-                {uploading && <p className="text-xs text-amber-500 mt-1">Uploading image...</p>}
+                {uploading && <p className="text-xs text-[var(--text-muted)] animate-pulse mt-1">Uploading image...</p>}
               </div>
             </div>
           </div>
@@ -684,7 +688,7 @@ export default function AdminDashboard() {
                 type="url" 
                 value={profileForm.github_url || ''}
                 onChange={(e) => setProfileForm({ ...profileForm, github_url: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
             <div>
@@ -693,7 +697,7 @@ export default function AdminDashboard() {
                 type="url" 
                 value={profileForm.linkedin_url || ''}
                 onChange={(e) => setProfileForm({ ...profileForm, linkedin_url: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
             <div>
@@ -702,7 +706,7 @@ export default function AdminDashboard() {
                 type="url" 
                 value={profileForm.telegram_url || ''}
                 onChange={(e) => setProfileForm({ ...profileForm, telegram_url: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
             <div>
@@ -711,7 +715,7 @@ export default function AdminDashboard() {
                 type="url" 
                 value={profileForm.instagram_url || ''}
                 onChange={(e) => setProfileForm({ ...profileForm, instagram_url: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
           </div>
@@ -719,15 +723,15 @@ export default function AdminDashboard() {
           <button 
             type="submit" 
             disabled={profileStatus.loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20 disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
           >
             {profileStatus.loading ? 'Updating Profile...' : 'Save Profile Changes'}
           </button>
         </form>
 
         {/* Manage Contact Info Form */}
-        <form onSubmit={handleUpdateContact} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-xl">
-          <h2 className="text-lg font-semibold text-[var(--text)]">Manage Contact Information & Availability</h2>
+        <form onSubmit={handleUpdateContact} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
+          <h2 className="text-lg font-bold text-[var(--text)]">Manage Contact Information & Availability</h2>
           
           {contactStatus.success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{contactStatus.success}</div>}
           {contactStatus.error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">{contactStatus.error}</div>}
@@ -740,7 +744,7 @@ export default function AdminDashboard() {
                 required
                 value={contactForm.email}
                 onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
             <div>
@@ -749,7 +753,7 @@ export default function AdminDashboard() {
                 type="text" 
                 value={contactForm.phone || ''}
                 onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
           </div>
@@ -762,7 +766,7 @@ export default function AdminDashboard() {
                 required
                 value={contactForm.location}
                 onChange={(e) => setContactForm({ ...contactForm, location: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
             <div>
@@ -772,7 +776,7 @@ export default function AdminDashboard() {
                 required
                 value={contactForm.availability_status}
                 onChange={(e) => setContactForm({ ...contactForm, availability_status: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               />
             </div>
           </div>
@@ -780,20 +784,20 @@ export default function AdminDashboard() {
           <button 
             type="submit" 
             disabled={contactStatus.loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20 disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
           >
             {contactStatus.loading ? 'Updating Contact Info...' : 'Save Contact Details'}
           </button>
         </form>
 
         {/* Manage Experience & Education Timeline (Add, Edit, Delete) */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-xl">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-[var(--text)]">
+            <h2 className="text-lg font-bold text-[var(--text)]">
               {editingExperienceId ? 'Edit Experience / Timeline' : 'Add Experience / Timeline'}
             </h2>
             {editingExperienceId && (
-              <button type="button" onClick={() => { setEditingExperienceId(null); setExpForm({ role: '', company: '', period: '', description: '', type: 'Education' }); }} className="text-xs text-amber-500 dark:text-amber-400 underline">
+              <button type="button" onClick={() => { setEditingExperienceId(null); setExpForm({ role: '', company: '', period: '', description: '', type: 'Education' }); }} className="text-xs text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] underline transition">
                 Cancel Edit
               </button>
             )}
@@ -806,22 +810,22 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Role / Title</label>
-                <input type="text" required value={expForm.role} onChange={(e) => setExpForm({ ...expForm, role: e.target.value })} placeholder="e.g. Software Engineering Student" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500" />
+                <input type="text" required value={expForm.role} onChange={(e) => setExpForm({ ...expForm, role: e.target.value })} placeholder="e.g. Software Engineering Student" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Company / Institution</label>
-                <input type="text" required value={expForm.company} onChange={(e) => setExpForm({ ...expForm, company: e.target.value })} placeholder="e.g. ASTU" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500" />
+                <input type="text" required value={expForm.company} onChange={(e) => setExpForm({ ...expForm, company: e.target.value })} placeholder="e.g. ASTU" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Period / Date Range</label>
-                <input type="text" required value={expForm.period} onChange={(e) => setExpForm({ ...expForm, period: e.target.value })} placeholder="e.g. 2023 – Present" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500" />
+                <input type="text" required value={expForm.period} onChange={(e) => setExpForm({ ...expForm, period: e.target.value })} placeholder="e.g. 2023 – Present" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Type Category</label>
-                <select value={expForm.type} onChange={(e) => setExpForm({ ...expForm, type: e.target.value })} className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500">
+                <select value={expForm.type} onChange={(e) => setExpForm({ ...expForm, type: e.target.value })} className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition">
                   <option value="Education">Education</option>
                   <option value="Internship">Internship</option>
                   <option value="Freelance">Freelance</option>
@@ -832,10 +836,10 @@ export default function AdminDashboard() {
 
             <div>
               <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Description / Key Achievements</label>
-              <textarea required rows={3} value={expForm.description} onChange={(e) => setExpForm({ ...expForm, description: e.target.value })} placeholder="Describe responsibilities and accomplishments..." className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500 resize-none" />
+              <textarea required rows={3} value={expForm.description} onChange={(e) => setExpForm({ ...expForm, description: e.target.value })} placeholder="Describe responsibilities and accomplishments..." className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition resize-none" />
             </div>
 
-            <button type="submit" disabled={expStatus.loading} className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20">
+            <button type="submit" disabled={expStatus.loading} className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50">
               {expStatus.loading ? 'Saving...' : editingExperienceId ? 'Update Experience' : '+ Add Experience'}
             </button>
           </form>
@@ -849,11 +853,11 @@ export default function AdminDashboard() {
                 {experiences.map((exp) => (
                   <div key={exp.id} className="flex items-center justify-between bg-[var(--bg)] border border-[var(--border)] px-4 py-3 rounded-xl">
                     <div>
-                      <p className="text-sm font-bold text-[var(--text)]">{exp.role} @ {exp.company} <span className="text-xs text-amber-500 font-mono">({exp.period})</span></p>
+                      <p className="text-sm font-bold text-[var(--text)]">{exp.role} @ {exp.company} <span className="text-xs text-[var(--text-muted)] font-mono">({exp.period})</span></p>
                       <p className="text-xs text-[var(--text-muted)] truncate max-w-md mt-0.5">{exp.description}</p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <button onClick={() => handleEditExperienceClick(exp)} className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-bold hover:bg-amber-500 hover:text-zinc-950 transition">Edit</button>
+                      <button onClick={() => handleEditExperienceClick(exp)} className="px-3 py-1 rounded-lg bg-[#222222]/5 border border-[#222222]/20 text-[#222222] dark:bg-[#f4f4f5]/10 dark:border-[#f4f4f5]/30 dark:text-[#f4f4f5] text-xs font-bold hover:bg-[#222222] hover:text-white dark:hover:bg-[#f4f4f5] dark:hover:text-[#1d1f1e] transition">Edit</button>
                       <button onClick={() => handleDeleteExperience(exp.id)} className="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition">Delete</button>
                     </div>
                   </div>
@@ -864,9 +868,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Manage Recommendations / Testimonials (With Local Avatar Upload & Edit Option) */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-xl">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-[var(--text)]">
+            <h2 className="text-lg font-bold text-[var(--text)]">
               {editingTestimonialId ? 'Edit Recommendation' : 'Manage Recommendations & Testimonials'}
             </h2>
             {editingTestimonialId && (
@@ -876,7 +880,7 @@ export default function AdminDashboard() {
                   setEditingTestimonialId(null); 
                   setTestimonialForm({ quote: '', author: '', role: '', avatar: '' }); 
                 }} 
-                className="text-xs text-amber-500 dark:text-amber-400 underline"
+                className="text-xs text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] underline transition"
               >
                 Cancel Edit
               </button>
@@ -889,17 +893,17 @@ export default function AdminDashboard() {
 
             <div>
               <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Testimonial / Recommendation Quote</label>
-              <textarea required rows={3} value={testimonialForm.quote} onChange={(e) => setTestimonialForm({ ...testimonialForm, quote: e.target.value })} placeholder="Write recommendation quote here..." className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500 resize-none" />
+              <textarea required rows={3} value={testimonialForm.quote} onChange={(e) => setTestimonialForm({ ...testimonialForm, quote: e.target.value })} placeholder="Write recommendation quote here..." className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition resize-none" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Author Name</label>
-                <input type="text" required value={testimonialForm.author} onChange={(e) => setTestimonialForm({ ...testimonialForm, author: e.target.value })} placeholder="e.g. Dr. Kebede M." className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500" />
+                <input type="text" required value={testimonialForm.author} onChange={(e) => setTestimonialForm({ ...testimonialForm, author: e.target.value })} placeholder="e.g. Dr. Kebede M." className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Author Role & Title</label>
-                <input type="text" required value={testimonialForm.role} onChange={(e) => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="e.g. Professor at ASTU" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500" />
+                <input type="text" required value={testimonialForm.role} onChange={(e) => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="e.g. Professor at ASTU" className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition" />
               </div>
             </div>
 
@@ -910,13 +914,13 @@ export default function AdminDashboard() {
                   <img src={testimonialForm.avatar} alt="Avatar Preview" className="w-12 h-12 rounded-xl object-cover border border-[var(--border)]" />
                 )}
                 <div className="flex-1">
-                  <input type="file" accept="image/*" onChange={handleTestimonialAvatarUpload} disabled={testimonialUploading} className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-zinc-950 hover:file:opacity-90 cursor-pointer disabled:opacity-50" />
-                  {testimonialUploading && <p className="text-xs text-amber-500 mt-1">Uploading avatar...</p>}
+                  <input type="file" accept="image/*" onChange={handleTestimonialAvatarUpload} disabled={testimonialUploading} className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#222222] file:text-white dark:file:bg-[#f4f4f5] dark:file:text-[#1d1f1e] file:transition-all hover:file:opacity-90 cursor-pointer disabled:opacity-50" />
+                  {testimonialUploading && <p className="text-xs text-[var(--text-muted)] animate-pulse mt-1">Uploading avatar...</p>}
                 </div>
               </div>
             </div>
 
-            <button type="submit" disabled={testimonialStatus.loading} className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20 disabled:opacity-50">
+            <button type="submit" disabled={testimonialStatus.loading} className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50">
               {testimonialStatus.loading ? 'Saving...' : editingTestimonialId ? 'Update Recommendation' : '+ Add Recommendation'}
             </button>
           </form>
@@ -933,19 +937,19 @@ export default function AdminDashboard() {
                       {t.avatar ? (
                         <img src={t.avatar} alt={t.author} className="w-10 h-10 rounded-xl object-cover border border-[var(--border)] shrink-0" />
                       ) : (
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center text-zinc-950 font-bold text-sm shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-[#222222] text-white dark:bg-[#f4f4f5] dark:text-[#1d1f1e] flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
                           {t.author.charAt(0)}
                         </div>
                       )}
                       <div>
                         <p className="text-sm font-medium text-[var(--text)]">&ldquo;{t.quote}&rdquo;</p>
-                        <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">— {t.author}, <span className="font-normal text-[var(--text-muted)]">{t.role}</span></p>
+                        <p className="text-xs text-[var(--text-muted)] font-medium mt-1">— {t.author}, <span className="font-normal">{t.role}</span></p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <button 
                         onClick={() => handleEditTestimonialClick(t)} 
-                        className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-500 hover:text-zinc-950 transition"
+                        className="px-3 py-1 rounded-lg bg-[#222222]/5 border border-[#222222]/20 text-[#222222] dark:bg-[#f4f4f5]/10 dark:border-[#f4f4f5]/30 dark:text-[#f4f4f5] text-xs font-bold hover:bg-[#222222] hover:text-white dark:hover:bg-[#f4f4f5] dark:hover:text-[#1d1f1e] transition"
                       >
                         Edit
                       </button>
@@ -964,8 +968,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* Add & Manage Technical Skills */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-xl">
-          <h2 className="text-lg font-semibold text-[var(--text)]">Manage Technical Skills</h2>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
+          <h2 className="text-lg font-bold text-[var(--text)]">Manage Technical Skills</h2>
 
           <form onSubmit={handleAddSkill} className="space-y-4 border-b border-[var(--border)] pb-6">
             {skillStatus.success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{skillStatus.success}</div>}
@@ -979,7 +983,7 @@ export default function AdminDashboard() {
                   required
                   value={skillForm.name}
                   onChange={(e) => setSkillForm({ ...skillForm, name: e.target.value })}
-                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
                   placeholder="e.g. PostgreSQL, React"
                 />
               </div>
@@ -988,7 +992,7 @@ export default function AdminDashboard() {
                 <select 
                   value={skillForm.category}
                   onChange={(e) => setSkillForm({ ...skillForm, category: e.target.value })}
-                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
                 >
                   <option value="Frontend">Frontend</option>
                   <option value="Backend">Backend</option>
@@ -1001,7 +1005,7 @@ export default function AdminDashboard() {
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label className="text-xs font-medium text-[var(--text-muted)]">Proficiency Level</label>
-                <span className="text-xs font-mono text-amber-500 dark:text-amber-400 font-bold">{skillForm.proficiency_level}%</span>
+                <span className="text-xs font-mono text-[var(--text)] font-bold">{skillForm.proficiency_level}%</span>
               </div>
               <input 
                 type="range" 
@@ -1009,14 +1013,14 @@ export default function AdminDashboard() {
                 max="100" 
                 value={skillForm.proficiency_level}
                 onChange={(e) => setSkillForm({ ...skillForm, proficiency_level: Number(e.target.value) })}
-                className="w-full accent-amber-500 bg-[var(--bg)] cursor-pointer"
+                className="w-full accent-[#222222] dark:accent-[#f4f4f5] bg-[var(--bg)] cursor-pointer"
               />
             </div>
 
             <button 
               type="submit" 
               disabled={skillStatus.loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20 disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
             >
               {skillStatus.loading ? 'Adding Skill...' : '+ Save & Publish Skill'}
             </button>
@@ -1033,10 +1037,10 @@ export default function AdminDashboard() {
                   <div key={skill.id} className="flex items-center justify-between bg-[var(--bg)] border border-[var(--border)] px-4 py-2.5 rounded-xl">
                     <div>
                       <span className="text-sm font-medium text-[var(--text)]">{skill.name}</span>
-                      <span className="ml-2 text-xs text-amber-600 dark:text-amber-400 font-mono">({skill.category} — {skill.proficiency_level}%)</span>
+                      <span className="ml-2 text-xs text-[var(--text-muted)] font-mono">({skill.category} — {skill.proficiency_level}%)</span>
                     </div>
                     <button 
-                      onClick={() => handleDeleteSkill(skill.id)}
+                      onClick={() => handleDeleteSkill(skill.id)} 
                       className="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition"
                     >
                       Delete
@@ -1049,9 +1053,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Add / Edit Project Form */}
-        <form onSubmit={handleSaveProject} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-xl">
+        <form onSubmit={handleSaveProject} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-[var(--text)]">{editingProjectId ? 'Edit Project' : 'Add New Project'}</h2>
+            <h2 className="text-lg font-bold text-[var(--text)]">{editingProjectId ? 'Edit Project' : 'Add New Project'}</h2>
             {editingProjectId && (
               <button 
                 type="button" 
@@ -1059,7 +1063,7 @@ export default function AdminDashboard() {
                   setEditingProjectId(null); 
                   setForm({ title: '', slug: '', description: '', tech_stack: '', github_url: '', live_url: '', image_url: '' }); 
                 }} 
-                className="text-xs text-amber-500 dark:text-amber-400 underline"
+                className="text-xs text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] underline transition"
               >
                 Cancel Edit
               </button>
@@ -1077,7 +1081,7 @@ export default function AdminDashboard() {
                 required
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
                 placeholder="e.g. NexusHub Portal"
               />
             </div>
@@ -1088,7 +1092,7 @@ export default function AdminDashboard() {
                 required
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
                 placeholder="e.g. nexushub-portal"
               />
             </div>
@@ -1101,7 +1105,7 @@ export default function AdminDashboard() {
               rows={3}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500 resize-none"
+              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition resize-none"
               placeholder="Brief overview of what the project does..."
             />
           </div>
@@ -1113,7 +1117,7 @@ export default function AdminDashboard() {
               required
               value={form.tech_stack}
               onChange={(e) => setForm({ ...form, tech_stack: e.target.value })}
-              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
               placeholder="Next.js, PostgreSQL, Tailwind CSS"
             />
           </div>
@@ -1135,9 +1139,9 @@ export default function AdminDashboard() {
                   accept="image/*"
                   onChange={handleProjectImageUpload}
                   disabled={projectUploading}
-                  className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-zinc-950 hover:file:opacity-90 cursor-pointer disabled:opacity-50"
+                  className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#222222] file:text-white dark:file:bg-[#f4f4f5] dark:file:text-[#1d1f1e] file:transition-all hover:file:opacity-90 cursor-pointer disabled:opacity-50"
                 />
-                {projectUploading && <p className="text-xs text-amber-500 mt-1">Uploading image locally...</p>}
+                {projectUploading && <p className="text-xs text-[var(--text-muted)] animate-pulse mt-1">Uploading image locally...</p>}
               </div>
             </div>
           </div>
@@ -1149,7 +1153,7 @@ export default function AdminDashboard() {
                 type="url" 
                 value={form.github_url}
                 onChange={(e) => setForm({ ...form, github_url: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
                 placeholder="https://github.com/..."
               />
             </div>
@@ -1159,7 +1163,7 @@ export default function AdminDashboard() {
                 type="url" 
                 value={form.live_url}
                 onChange={(e) => setForm({ ...form, live_url: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-amber-500"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
                 placeholder="https://..."
               />
             </div>
@@ -1168,14 +1172,14 @@ export default function AdminDashboard() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20 disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
           >
             {loading ? 'Saving Project...' : editingProjectId ? 'Update Project' : 'Add Project to Database'}
           </button>
         </form>
 
         {/* Existing Projects Management List */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-xl">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Manage Existing Projects</h3>
           {projects.length === 0 ? (
             <p className="text-xs text-[var(--text-muted)] italic">No projects found in the database.</p>
@@ -1190,7 +1194,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-2">
                     <button 
                       onClick={() => handleEditProjectClick(proj)} 
-                      className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-500 hover:text-zinc-950 transition"
+                      className="px-3 py-1 rounded-lg bg-[#222222]/5 border border-[#222222]/20 text-[#222222] dark:bg-[#f4f4f5]/10 dark:border-[#f4f4f5]/30 dark:text-[#f4f4f5] text-xs font-bold hover:bg-[#222222] hover:text-white dark:hover:bg-[#f4f4f5] dark:hover:text-[#1d1f1e] transition"
                     >
                       Edit
                     </button>

@@ -34,26 +34,26 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // White glow shadow applied via inline style in dark mode
+  // Shadows: completely flat/removed in dark mode per user instruction
   const btnShadow = isDark
-    ? '0 0 16px rgba(255,255,255,0.35), 0 2px 8px rgba(0,0,0,0.5)'
+    ? 'none'
     : '0 2px 8px rgba(0,0,0,0.08)';
 
   const activeBtnShadow = isDark
-    ? '0 0 22px rgba(255,255,255,0.45), 0 2px 10px rgba(0,0,0,0.5)'
+    ? 'none'
     : '0 2px 12px rgba(0,0,0,0.12)';
 
   // Navbar bar shadow
   const headerShadow = isDark
-    ? '0 2px 30px rgba(255,255,255,0.12), 0 1px 0 rgba(255,255,255,0.08)'
+    ? 'none'
     : '0 2px 12px rgba(0,0,0,0.08)';
 
   const getLinkClass = (section: string) => {
     const isActive = activeSection === section;
     return `px-3.5 py-2 rounded-xl transition-all duration-300 text-xs font-semibold border ${
       isActive
-        ? 'text-amber-500 border-amber-500/50 font-bold bg-[var(--bg-card)]'
-        : 'text-[var(--text-muted)] border-[var(--border)]/50 bg-[var(--bg-card)] hover:text-amber-500 hover:border-amber-500/40'
+        ? 'text-[#222222] border-[#222222] font-bold bg-[#ffffff] shadow-sm dark:text-[#1d1f1e] dark:border-[#f4f4f5] dark:bg-[#f4f4f5]'
+        : 'text-[var(--text-muted)] border-[var(--border)]/50 bg-[var(--bg-card)] hover:text-[#222222] hover:border-[#222222]/40 dark:hover:text-[#f4f4f5] dark:hover:border-[#f4f4f5]/40'
     }`;
   };
 
@@ -61,8 +61,8 @@ export default function Navbar() {
     const isActive = activeSection === section;
     return `block text-sm font-semibold px-4 py-3 rounded-xl transition border ${
       isActive
-        ? 'text-amber-500 border-amber-500/50 font-bold bg-[var(--bg-card)]'
-        : 'text-[var(--text-muted)] border-[var(--border)]/50 bg-[var(--bg-card)] hover:text-amber-500 hover:border-amber-500/40'
+        ? 'text-[#222222] border-[#222222] font-bold bg-[#ffffff] dark:text-[#1d1f1e] dark:border-[#f4f4f5] dark:bg-[#f4f4f5]'
+        : 'text-[var(--text-muted)] border-[var(--border)]/50 bg-[var(--bg-card)] hover:text-[#222222] hover:border-[#222222]/40 dark:hover:text-[#f4f4f5] dark:hover:border-[#f4f4f5]/40'
     }`;
   };
 
@@ -81,8 +81,8 @@ export default function Navbar() {
 
         {/* Brand */}
         <a href="#about" className="group flex items-center gap-1 font-extrabold text-base sm:text-lg tracking-wider">
-          <span className="text-amber-500 group-hover:opacity-90 transition">EYOSIYAS</span>
-          <span className="text-yellow-400 text-lg sm:text-xl group-hover:scale-125 transition duration-300">.</span>
+          <span className="text-[#222222] dark:text-[#f4f4f5] group-hover:opacity-90 transition">Eyosiyas</span>
+          <span className="text-[#222222] dark:text-[#f4f4f5] text-lg sm:text-xl group-hover:scale-125 transition duration-300">.</span>
           <span
             className="text-[10px] uppercase tracking-widest font-mono hidden sm:inline-block ml-1 px-2.5 py-1 rounded-lg border border-[var(--border)]/50 text-[var(--text-muted)] bg-[var(--bg-card)]"
             style={{ boxShadow: btnShadow }}
@@ -112,7 +112,7 @@ export default function Navbar() {
             href="/admin"
             title="Admin Dashboard"
             aria-label="Admin"
-            className="p-2.5 rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-amber-500 hover:border-amber-500/40 transition-all duration-300"
+            className="p-2.5 rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[#222222] hover:border-[#222222]/40 dark:hover:text-[#f4f4f5] dark:hover:border-[#f4f4f5]/40 transition-all duration-300"
             style={{ boxShadow: btnShadow }}
           >
             <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
@@ -121,8 +121,8 @@ export default function Navbar() {
           </a>
           <a
             href="#contact"
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 text-xs font-bold tracking-wide hover:opacity-90 transition-all duration-300"
-            style={{ boxShadow: isDark ? '0 0 20px rgba(255,255,255,0.2), 0 2px 12px rgba(245,158,11,0.4)' : '0 2px 12px rgba(245,158,11,0.35)' }}
+            className="px-4 py-2.5 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white text-xs font-bold tracking-wide transition-all duration-300 shadow-md"
+            style={{ boxShadow: isDark ? 'none' : '0 2px 8px rgba(0,0,0,0.15)' }}
           >
             Let&apos;s Connect
           </a>
@@ -134,7 +134,7 @@ export default function Navbar() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle Menu"
-            className="focus:outline-none p-2.5 rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-amber-500 transition"
+            className="focus:outline-none p-2.5 rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] transition"
             style={{ boxShadow: btnShadow }}
           >
             <svg className="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
@@ -166,7 +166,7 @@ export default function Navbar() {
             <a
               href="/admin"
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center px-4 py-3 rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)] text-sm font-semibold text-[var(--text-muted)] hover:text-amber-500 transition"
+              className="flex items-center justify-center px-4 py-3 rounded-xl border border-[var(--border)]/50 bg-[var(--bg-card)] text-sm font-semibold text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] transition"
               style={{ boxShadow: btnShadow }}
             >
               Admin
@@ -174,8 +174,8 @@ export default function Navbar() {
             <a
               href="#contact"
               onClick={() => setIsOpen(false)}
-              className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-950 font-bold text-center text-xs"
-              style={{ boxShadow: isDark ? '0 0 20px rgba(255,255,255,0.2), 0 2px 12px rgba(245,158,11,0.4)' : '0 2px 12px rgba(245,158,11,0.35)' }}
+              className="flex-1 py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-center text-xs"
+              style={{ boxShadow: isDark ? 'none' : '0 2px 8px rgba(0,0,0,0.15)' }}
             >
               Let&apos;s Connect
             </a>

@@ -1,25 +1,31 @@
 @import "tailwindcss";
 
-/* ── Dark mode (default) ─────────────────────────────────── */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Dark mode (60-30-10 rule: 60% #1d1f1e, 30% #292c2b, 10% #f4f4f5) ── */
 :root, html.dark {
-  --bg:          #09090b;   /* zinc-950 */
-  --bg-card:     #18181b;   /* zinc-900 */
-  --bg-card2:    #0f0f10;   /* zinc-950 tinted */
-  --border:      #27272a;   /* zinc-800 */
-  --text:        #f4f4f5;   /* zinc-100 */
-  --text-muted:  #a1a1aa;   /* zinc-400 */
-  --text-faint:  #52525b;   /* zinc-600 */
+  --bg:          #1d1f1e;   /* 60% Dominant canvas */
+  --bg-card:     #292c2b;   /* 30% Secondary surface card */
+  --bg-card2:    #242726;   /* slightly deeper card surface */
+  --border:      #3d4240;   /* crisp subtle card border */
+  --text:        #f4f4f5;   /* 10% accent & primary text */
+  --text-muted:  #a3aaa8;   /* readable muted secondary text */
+  --text-faint:  #6c7573;   /* faint labels */
+  --accent:      #f4f4f5;   /* 10% Accent */
+  --accent-text: #1d1f1e;   /* text on accent */
 }
 
-/* ── Light mode ──────────────────────────────────────────── */
+/* ── Light mode (60-30-10 rule: 60% #ededed, 30% #ffffff, 10% #222222) ─ */
 html.light {
-  --bg:          #fafaf9;   /* warm white */
-  --bg-card:     #ffffff;
-  --bg-card2:    #f5f5f4;   /* stone-100 */
-  --border:      #e7e5e4;   /* stone-200 */
-  --text:        #1c1917;   /* stone-900 */
-  --text-muted:  #78716c;   /* stone-500 */
-  --text-faint:  #a8a29e;   /* stone-400 */
+  --bg:          #ededed;   /* 60% Dominant canvas */
+  --bg-card:     #ffffff;   /* 30% Secondary pure white card */
+  --bg-card2:    #f5f5f5;   /* subtle card surface */
+  --border:      #dcdcdc;   /* crisp subtle card border */
+  --text:        #111111;   /* deep clear readable text */
+  --text-muted:  #555555;   /* readable secondary text */
+  --text-faint:  #777777;   /* faint labels */
+  --accent:      #222222;   /* 10% Accent */
+  --accent-text: #ffffff;   /* text on accent */
 }
 
 @theme inline {
@@ -41,10 +47,10 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ── Golden selection ────────────────────────────────────── */
+/* ── Selection ───────────────────────────────────────────── */
 ::selection {
-  background-color: #f59e0b;
-  color: #09090b;
+  background-color: var(--accent);
+  color: var(--accent-text);
 }
 
 /* ── Animations ──────────────────────────────────────────── */

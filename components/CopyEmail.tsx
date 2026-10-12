@@ -18,11 +18,12 @@ export default function CopyEmail({ email }: { email: string }) {
       aria-label="Copy email address"
       className="shrink-0 p-1.5 rounded-lg border transition-all duration-200
         border-[var(--border)] text-[var(--text-muted)]
-        hover:border-amber-500/50 hover:text-amber-500 hover:bg-amber-500/10"
+        hover:border-[#222222]/40 hover:text-[#222222] hover:bg-[#222222]/5
+        dark:hover:border-[#f4f4f5]/40 dark:hover:text-[#f4f4f5] dark:hover:bg-[#f4f4f5]/10"
     >
       {copied ? (
         /* Checkmark */
-        <svg className="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <svg className="w-3.5 h-3.5 text-[#222222] dark:text-[#f4f4f5]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
         </svg>
       ) : (
