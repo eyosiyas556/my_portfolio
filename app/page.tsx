@@ -113,7 +113,7 @@ export default async function Home() {
                           </span>
                           Coding &amp; Building
                         </span>
-                        <span className="text-[#222222] dark:text-amber-400 font-mono font-bold">ASTU</span>
+                        <span className="text-[#222222] dark:text-[#f4f4f5] font-mono font-bold">ASTU</span>
                       </div>
                     </div>
                   </div>
@@ -174,7 +174,7 @@ export default async function Home() {
                       </span>
                       Coding &amp; Building
                     </span>
-                    <span className="text-[#222222] dark:text-amber-400 font-mono font-bold">ASTU</span>
+                    <span className="text-[#222222] dark:text-[#f4f4f5] font-mono font-bold">ASTU</span>
                   </div>
                 </div>
               </div>
@@ -392,7 +392,7 @@ export default async function Home() {
                       )}
                       <div>
                         <h3 className="text-sm font-bold text-[var(--text)]">{item.author}</h3>
-                        <p className="text-xs text-[#222222] dark:text-amber-400 font-medium">{item.role}</p>
+                        <p className="text-xs text-[#222222] dark:text-[#f4f4f5] font-medium">{item.role}</p>
                       </div>
                     </div>
                   </div>
@@ -492,8 +492,8 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
 
           <div className="flex items-center justify-center sm:justify-start gap-3">
-            <span className="font-extrabold text-sm tracking-wider text-[#222222] dark:text-amber-400">
-              EYOSIYAS<span className="text-[#222222] dark:text-amber-400">.</span>
+            <span className="font-extrabold text-sm tracking-wider text-[#222222] dark:text-[#f4f4f5]">
+              EYOSIYAS<span className="text-[#222222] dark:text-[#f4f4f5]">.</span>
             </span>
 
             <span className="hidden sm:block text-[var(--text-faint)]">|</span>
