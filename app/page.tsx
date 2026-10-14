@@ -9,6 +9,7 @@ import RevealOnScroll from '@/components/RevealOnScroll';
 import LiveReload from '@/components/LiveReload';
 import SkillsSection from '@/components/SkillsSection';
 import { FaGithub, FaLinkedin, FaTelegram, FaInstagram } from 'react-icons/fa';
+import { Mail, MapPin, Briefcase } from 'lucide-react';
 
 async function safeQuery<T>(queryFn: () => Promise<T>, fallback: T, retries = 2): Promise<T> {
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -54,12 +55,6 @@ export default async function Home() {
     availability_status: contactInfo?.availability_status ?? 'Available for Opportunities',
     phone: contactInfo?.phone ?? '',
   };
-
-  const groupedSkills: { [key: string]: any[] } = skills.reduce((acc: any, skill: any) => {
-    if (!acc[skill.category]) acc[skill.category] = [];
-    acc[skill.category].push(skill);
-    return acc;
-  }, {});
 
   return (
     <div className="min-h-screen overflow-x-hidden transition-colors duration-300 bg-[var(--bg)] text-[var(--text)]">
@@ -251,7 +246,9 @@ export default async function Home() {
               </div>
             ) : (
               <div className="flex items-center gap-4 p-6 rounded-2xl border border-dashed border-[#222222]/20 bg-[#ffffff] dark:border-[#3d4240] dark:bg-[#292c2b] text-[var(--text-muted)]">
-                <span className="text-[#222222] dark:text-[#f4f4f5] text-2xl">🚧</span>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#222222]/5 dark:bg-[#f4f4f5]/10 border border-[#222222]/10 dark:border-[#f4f4f5]/20 text-[#222222] dark:text-[#f4f4f5]">
+                  <Briefcase className="w-5 h-5" />
+                </div>
                 <div>
                   <p className="text-sm font-semibold text-[var(--text)]">Experience coming soon</p>
                   <p className="text-xs mt-0.5">Internships, projects and education will appear here.</p>
@@ -435,22 +432,26 @@ export default async function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2.5 p-3 rounded-xl border bg-[var(--bg)] border-[var(--border)] shadow-sm">
-                    <span className="text-[#222222] dark:text-[#f4f4f5] text-sm">📧</span>
-                    <div className="truncate flex-1">
-                      <p className="text-[9px] uppercase font-mono text-[var(--text-faint)] font-semibold">Email</p>
-                      <a href={`mailto:${safeContact.email}`} className="text-xs font-medium truncate transition text-[var(--text)] hover:text-[#222222] dark:hover:text-[#f4f4f5]">
+                  <div className="flex items-center gap-3 p-3 rounded-xl border bg-[var(--bg)] border-[var(--border)] shadow-sm group hover:border-[#222222]/40 dark:hover:border-[#f4f4f5]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#222222]/5 dark:bg-[#f4f4f5]/10 border border-[#222222]/10 dark:border-[#f4f4f5]/20 text-[#222222] dark:text-[#f4f4f5] shadow-xs group-hover:scale-105 transition-transform">
+                      <Mail className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <div className="truncate flex-1 min-w-0">
+                      <p className="text-[9px] uppercase font-mono text-[var(--text-faint)] font-bold tracking-wider">Email</p>
+                      <a href={`mailto:${safeContact.email}`} className="text-xs font-semibold truncate block transition text-[var(--text)] hover:text-[#222222] dark:hover:text-[#f4f4f5]">
                         {safeContact.email}
                       </a>
                     </div>
                     <CopyEmail email={safeContact.email} />
                   </div>
 
-                  <div className="flex items-center gap-2.5 p-3 rounded-xl border bg-[var(--bg)] border-[var(--border)] shadow-sm">
-                    <span className="text-[#222222] dark:text-[#f4f4f5] text-sm">📍</span>
-                    <div>
-                      <p className="text-[9px] uppercase font-mono text-[var(--text-faint)] font-semibold">Location</p>
-                      <p className="text-xs font-medium text-[var(--text)]">{safeContact.location}</p>
+                  <div className="flex items-center gap-3 p-3 rounded-xl border bg-[var(--bg)] border-[var(--border)] shadow-sm group hover:border-[#222222]/40 dark:hover:border-[#f4f4f5]/40 transition-colors">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#222222]/5 dark:bg-[#f4f4f5]/10 border border-[#222222]/10 dark:border-[#f4f4f5]/20 text-[#222222] dark:text-[#f4f4f5] shadow-xs group-hover:scale-105 transition-transform">
+                      <MapPin className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <div className="truncate flex-1 min-w-0">
+                      <p className="text-[9px] uppercase font-mono text-[var(--text-faint)] font-bold tracking-wider">Location</p>
+                      <p className="text-xs font-semibold text-[var(--text)] truncate">{safeContact.location}</p>
                     </div>
                   </div>
                 </div>
@@ -465,9 +466,12 @@ export default async function Home() {
                 <MapEmbed location={safeContact.location} />
 
                 <div className="relative z-10 p-3 sm:p-4 pointer-events-none flex justify-between items-start">
-                  <div className="bg-[var(--bg-card)]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[var(--border)] shadow-md">
-                    <h3 className="text-xs font-bold text-[var(--text)]">Based In</h3>
-                    <p className="text-[10px] text-[var(--text-muted)]">{safeContact.location}</p>
+                  <div className="bg-[var(--bg-card)]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[var(--border)] shadow-md flex items-center gap-2">
+                    <MapPin className="w-3.5 h-3.5 text-[#222222] dark:text-[#f4f4f5] shrink-0" />
+                    <div>
+                      <h3 className="text-xs font-bold text-[var(--text)]">Based In</h3>
+                      <p className="text-[10px] text-[var(--text-muted)]">{safeContact.location}</p>
+                    </div>
                   </div>
                   <span className="px-2.5 py-1 rounded-xl backdrop-blur-md text-[10px] font-mono font-semibold text-[#222222] dark:text-[#f4f4f5] bg-[var(--bg-card)]/90 border border-[var(--border)] shadow-md">
                     Ethiopia

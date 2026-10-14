@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import ThemeToggle from '@/components/ThemeToggle';
+import SkillControlCenter from '@/components/SkillControlCenter';
 
 export default function AdminDashboard() {
   const [password, setPassword] = useState('');
@@ -44,13 +45,6 @@ export default function AdminDashboard() {
   });
   const [expStatus, setExpStatus] = useState({ loading: false, success: '', error: '' });
 
-  // Form state for new skill
-  const [skillForm, setSkillForm] = useState({
-    name: '',
-    category: 'Frontend',
-    proficiency_level: 85
-  });
-  const [skillStatus, setSkillStatus] = useState({ loading: false, success: '', error: '' });
 
   // Form state for testimonial (supports Add & Edit)
   const [testimonialForm, setTestimonialForm] = useState({
@@ -364,6 +358,7 @@ export default function AdminDashboard() {
       description: exp.description || '',
       type: exp.type || 'Education'
     });
+    document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleDeleteExperience = async (id: number) => {
@@ -395,7 +390,7 @@ export default function AdminDashboard() {
       live_url: proj.live_url || '',
       image_url: proj.image_url || ''
     });
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleDeleteProject = async (id: number) => {
@@ -419,28 +414,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleAddSkill = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSkillStatus({ loading: true, success: '', error: '' });
-
-    try {
-      const res = await fetch('/api/skills', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...skillForm, password })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to add skill');
-
-      setSkillStatus({ loading: false, success: 'Skill added successfully!', error: '' });
-      broadcastRefresh();
-      setSkillForm({ name: '', category: 'Frontend', proficiency_level: 85 });
-      fetchData();
-    } catch (err: any) {
-      setSkillStatus({ loading: false, success: '', error: err.message });
-    }
-  };
 
   const handleSaveTestimonial = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -483,6 +456,7 @@ export default function AdminDashboard() {
       role: t.role || '',
       avatar: t.avatar || ''
     });
+    document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleDeleteTestimonial = async (id: number) => {
@@ -518,25 +492,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDeleteSkill = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this skill?')) return;
-
-    try {
-      const res = await fetch(`/api/skills?id=${id}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        setSkills(skills.filter(s => s.id !== id));
-        broadcastRefresh();
-      } else {
-        alert('Failed to delete skill.');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('An error occurred while deleting.');
-    }
-  };
 
   if (!isAuthenticated) {
     return (
@@ -575,50 +530,10 @@ export default function AdminDashboard() {
             <h1 className="text-2xl font-extrabold text-[#222222] dark:text-[#f4f4f5]">Admin Dashboard</h1>
             <p className="text-xs text-[var(--text-muted)]">Manage Eyosiyas&apos;s Portfolio, Timeline & Projects</p>
           </div>
-          <a href="/" className="text-xs text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] transition underline">← Back to Portfolio</a>
         </div>
 
-        {/* Visitor Messages */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-bold text-[var(--text)]">Visitor Messages</h2>
-            <span className="text-xs bg-[#222222]/5 text-[#222222] border border-[#222222]/20 dark:bg-[#f4f4f5]/10 dark:text-[#f4f4f5] dark:border-[#f4f4f5]/30 px-2.5 py-1 rounded-full font-mono font-semibold">
-              {messages.length} message{messages.length !== 1 ? 's' : ''}
-            </span>
-          </div>
-
-          {messagesLoading ? (
-            <p className="text-xs text-[var(--text-muted)] italic">Loading messages...</p>
-          ) : messages.length === 0 ? (
-            <p className="text-xs text-[var(--text-muted)] italic">No messages yet. Messages sent via the contact form will appear here.</p>
-          ) : (
-            <div className="space-y-3 max-h-[480px] overflow-y-auto pr-2">
-              {messages.map((msg) => (
-                <div key={msg.id} className="bg-[var(--bg)] border border-[var(--border)] px-4 py-4 rounded-xl space-y-2 shadow-sm">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-[var(--text)]">{msg.name}</p>
-                      <p className="text-xs text-[var(--text-muted)] font-mono mt-0.5">{msg.email}</p>
-                      {msg.created_at && (
-                        <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{new Date(msg.created_at).toLocaleString()}</p>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => handleDeleteMessage(msg.id)}
-                      className="shrink-0 px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  <p className="text-sm text-[var(--text-muted)] leading-relaxed border-t border-[var(--border)] pt-2">{msg.message}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Profile & Socials Management Form */}
-        <form onSubmit={handleUpdateProfile} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
+        {/* 1. Profile & Socials Management Form (About) */}
+        <form id="about" onSubmit={handleUpdateProfile} className="scroll-mt-28 bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
           <h2 className="text-lg font-bold text-[var(--text)]">Manage Profile & Social Links</h2>
           
           {profileStatus.success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{profileStatus.success}</div>}
@@ -729,69 +644,8 @@ export default function AdminDashboard() {
           </button>
         </form>
 
-        {/* Manage Contact Info Form */}
-        <form onSubmit={handleUpdateContact} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
-          <h2 className="text-lg font-bold text-[var(--text)]">Manage Contact Information & Availability</h2>
-          
-          {contactStatus.success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{contactStatus.success}</div>}
-          {contactStatus.error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">{contactStatus.error}</div>}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Email Address</label>
-              <input 
-                type="email" 
-                required
-                value={contactForm.email}
-                onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Phone Number (Optional)</label>
-              <input 
-                type="text" 
-                value={contactForm.phone || ''}
-                onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Location Text</label>
-              <input 
-                type="text" 
-                required
-                value={contactForm.location}
-                onChange={(e) => setContactForm({ ...contactForm, location: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Availability Status Badge</label>
-              <input 
-                type="text" 
-                required
-                value={contactForm.availability_status}
-                onChange={(e) => setContactForm({ ...contactForm, availability_status: e.target.value })}
-                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-              />
-            </div>
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={contactStatus.loading}
-            className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
-          >
-            {contactStatus.loading ? 'Updating Contact Info...' : 'Save Contact Details'}
-          </button>
-        </form>
-
-        {/* Manage Experience & Education Timeline (Add, Edit, Delete) */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
+        {/* 2. Manage Experience & Education Timeline (Add, Edit, Delete) */}
+        <div id="experience" className="scroll-mt-28 bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-bold text-[var(--text)]">
               {editingExperienceId ? 'Edit Experience / Timeline' : 'Add Experience / Timeline'}
@@ -867,8 +721,180 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Manage Recommendations / Testimonials (With Local Avatar Upload & Edit Option) */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
+        {/* 3. Projects Control Section */}
+        <div id="projects" className="scroll-mt-28 space-y-8">
+          {/* Add / Edit Project Form */}
+          <form onSubmit={handleSaveProject} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-bold text-[var(--text)]">{editingProjectId ? 'Edit Project' : 'Add New Project'}</h2>
+              {editingProjectId && (
+                <button 
+                  type="button" 
+                  onClick={() => { 
+                    setEditingProjectId(null); 
+                    setForm({ title: '', slug: '', description: '', tech_stack: '', github_url: '', live_url: '', image_url: '' }); 
+                  }} 
+                  className="text-xs text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] underline transition"
+                >
+                  Cancel Edit
+                </button>
+              )}
+            </div>
+            
+            {success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{success}</div>}
+            {error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">{error}</div>}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Project Title</label>
+                <input 
+                  type="text" 
+                  required
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
+                  placeholder="e.g. NexusHub Portal"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Slug (URL friendly name)</label>
+                <input 
+                  type="text" 
+                  required
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
+                  placeholder="e.g. nexushub-portal"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Description</label>
+              <textarea 
+                required
+                rows={3}
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition resize-none"
+                placeholder="Brief overview of what the project does..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Tech Stack (comma separated)</label>
+              <input 
+                type="text" 
+                required
+                value={form.tech_stack}
+                onChange={(e) => setForm({ ...form, tech_stack: e.target.value })}
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
+                placeholder="Next.js, PostgreSQL, Tailwind CSS"
+              />
+            </div>
+
+            {/* Local Project Image Upload Section */}
+            <div className="space-y-2 border border-[var(--border)] p-4 rounded-xl bg-[var(--bg)]">
+              <label className="block text-xs font-medium text-[var(--text-muted)]">Project Screenshot (Upload Locally)</label>
+              <div className="flex items-center gap-4">
+                {form.image_url && (
+                  <img 
+                    src={form.image_url} 
+                    alt="Project Preview" 
+                    className="w-16 h-12 rounded-lg object-cover border border-[var(--border)]"
+                  />
+                )}
+                <div className="flex-1">
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleProjectImageUpload}
+                    disabled={projectUploading}
+                    className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#222222] file:text-white dark:file:bg-[#f4f4f5] dark:file:text-[#1d1f1e] file:transition-all hover:file:opacity-90 cursor-pointer disabled:opacity-50"
+                  />
+                  {projectUploading && <p className="text-xs text-[var(--text-muted)] animate-pulse mt-1">Uploading image locally...</p>}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">GitHub URL</label>
+                <input 
+                  type="url" 
+                  value={form.github_url}
+                  onChange={(e) => setForm({ ...form, github_url: e.target.value })}
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
+                  placeholder="https://github.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Live Demo URL</label>
+                <input 
+                  type="url" 
+                  value={form.live_url}
+                  onChange={(e) => setForm({ ...form, live_url: e.target.value })}
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
+                  placeholder="https://..."
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
+            >
+              {loading ? 'Saving Project...' : editingProjectId ? 'Update Project' : 'Add Project to Database'}
+            </button>
+          </form>
+
+          {/* Existing Projects Management List */}
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Manage Existing Projects</h3>
+            {projects.length === 0 ? (
+              <p className="text-xs text-[var(--text-muted)] italic">No projects found in the database.</p>
+            ) : (
+              <div className="space-y-3 max-h-72 overflow-y-auto pr-2">
+                {projects.map((proj) => (
+                  <div key={proj.id} className="flex items-center justify-between bg-[var(--bg)] border border-[var(--border)] px-4 py-3 rounded-xl">
+                    <div>
+                      <h4 className="text-sm font-bold text-[var(--text)]">{proj.title}</h4>
+                      <p className="text-xs text-[var(--text-muted)] truncate max-w-xs">{proj.description}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => handleEditProjectClick(proj)} 
+                        className="px-3 py-1 rounded-lg bg-[#222222]/5 border border-[#222222]/20 text-[#222222] dark:bg-[#f4f4f5]/10 dark:border-[#f4f4f5]/30 dark:text-[#f4f4f5] text-xs font-bold hover:bg-[#222222] hover:text-white dark:hover:bg-[#f4f4f5] dark:hover:text-[#1d1f1e] transition"
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteProject(proj.id)} 
+                        className="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 4. Dynamic Skill Control Center */}
+        <div id="skills" className="scroll-mt-28">
+          <SkillControlCenter
+            skills={skills}
+            setSkills={setSkills}
+            password={password}
+            onRefresh={fetchData}
+          />
+        </div>
+
+        {/* 5. Manage Recommendations / Testimonials (With Local Avatar Upload & Edit Option) */}
+        <div id="testimonials" className="scroll-mt-28 bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-bold text-[var(--text)]">
               {editingTestimonialId ? 'Edit Recommendation' : 'Manage Recommendations & Testimonials'}
@@ -967,244 +993,100 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Add & Manage Technical Skills */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-6 shadow-md dark:shadow-none">
-          <h2 className="text-lg font-bold text-[var(--text)]">Manage Technical Skills</h2>
-
-          <form onSubmit={handleAddSkill} className="space-y-4 border-b border-[var(--border)] pb-6">
-            {skillStatus.success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{skillStatus.success}</div>}
-            {skillStatus.error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">{skillStatus.error}</div>}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Skill Name</label>
-                <input 
-                  type="text" 
-                  required
-                  value={skillForm.name}
-                  onChange={(e) => setSkillForm({ ...skillForm, name: e.target.value })}
-                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-                  placeholder="e.g. PostgreSQL, React"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Category</label>
-                <select 
-                  value={skillForm.category}
-                  onChange={(e) => setSkillForm({ ...skillForm, category: e.target.value })}
-                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-                >
-                  <option value="Frontend">Frontend</option>
-                  <option value="Backend">Backend</option>
-                  <option value="Database">Database</option>
-                  <option value="Tools">Tools</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="text-xs font-medium text-[var(--text-muted)]">Proficiency Level</label>
-                <span className="text-xs font-mono text-[var(--text)] font-bold">{skillForm.proficiency_level}%</span>
-              </div>
-              <input 
-                type="range" 
-                min="40" 
-                max="100" 
-                value={skillForm.proficiency_level}
-                onChange={(e) => setSkillForm({ ...skillForm, proficiency_level: Number(e.target.value) })}
-                className="w-full accent-[#222222] dark:accent-[#f4f4f5] bg-[var(--bg)] cursor-pointer"
-              />
-            </div>
-
-            <button 
-              type="submit" 
-              disabled={skillStatus.loading}
-              className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
-            >
-              {skillStatus.loading ? 'Adding Skill...' : '+ Save & Publish Skill'}
-            </button>
-          </form>
-
-          {/* List existing skills with Delete button */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Current Database Skills</h3>
-            {skills.length === 0 ? (
-              <p className="text-xs text-[var(--text-muted)] italic">No skills loaded or database is empty.</p>
-            ) : (
-              <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-                {skills.map((skill) => (
-                  <div key={skill.id} className="flex items-center justify-between bg-[var(--bg)] border border-[var(--border)] px-4 py-2.5 rounded-xl">
-                    <div>
-                      <span className="text-sm font-medium text-[var(--text)]">{skill.name}</span>
-                      <span className="ml-2 text-xs text-[var(--text-muted)] font-mono">({skill.category} — {skill.proficiency_level}%)</span>
-                    </div>
-                    <button 
-                      onClick={() => handleDeleteSkill(skill.id)} 
-                      className="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Add / Edit Project Form */}
-        <form onSubmit={handleSaveProject} className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-bold text-[var(--text)]">{editingProjectId ? 'Edit Project' : 'Add New Project'}</h2>
-            {editingProjectId && (
-              <button 
-                type="button" 
-                onClick={() => { 
-                  setEditingProjectId(null); 
-                  setForm({ title: '', slug: '', description: '', tech_stack: '', github_url: '', live_url: '', image_url: '' }); 
-                }} 
-                className="text-xs text-[var(--text-muted)] hover:text-[#222222] dark:hover:text-[#f4f4f5] underline transition"
-              >
-                Cancel Edit
-              </button>
-            )}
-          </div>
+        {/* 6. Manage Contact Info Form */}
+        <form id="contact" onSubmit={handleUpdateContact} className="scroll-mt-28 bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
+          <h2 className="text-lg font-bold text-[var(--text)]">Manage Contact Information & Availability</h2>
           
-          {success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{success}</div>}
-          {error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">{error}</div>}
+          {contactStatus.success && <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs">{contactStatus.success}</div>}
+          {contactStatus.error && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">{contactStatus.error}</div>}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Project Title</label>
+              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Email Address</label>
               <input 
-                type="text" 
+                type="email" 
                 required
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                value={contactForm.email}
+                onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                 className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-                placeholder="e.g. NexusHub Portal"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Slug (URL friendly name)</label>
+              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Phone Number (Optional)</label>
               <input 
                 type="text" 
-                required
-                value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                value={contactForm.phone || ''}
+                onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                 className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-                placeholder="e.g. nexushub-portal"
               />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Description</label>
-            <textarea 
-              required
-              rows={3}
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition resize-none"
-              placeholder="Brief overview of what the project does..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Tech Stack (comma separated)</label>
-            <input 
-              type="text" 
-              required
-              value={form.tech_stack}
-              onChange={(e) => setForm({ ...form, tech_stack: e.target.value })}
-              className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-              placeholder="Next.js, PostgreSQL, Tailwind CSS"
-            />
-          </div>
-
-          {/* Local Project Image Upload Section */}
-          <div className="space-y-2 border border-[var(--border)] p-4 rounded-xl bg-[var(--bg)]">
-            <label className="block text-xs font-medium text-[var(--text-muted)]">Project Screenshot (Upload Locally)</label>
-            <div className="flex items-center gap-4">
-              {form.image_url && (
-                <img 
-                  src={form.image_url} 
-                  alt="Project Preview" 
-                  className="w-16 h-12 rounded-lg object-cover border border-[var(--border)]"
-                />
-              )}
-              <div className="flex-1">
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={handleProjectImageUpload}
-                  disabled={projectUploading}
-                  className="w-full text-xs text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#222222] file:text-white dark:file:bg-[#f4f4f5] dark:file:text-[#1d1f1e] file:transition-all hover:file:opacity-90 cursor-pointer disabled:opacity-50"
-                />
-                {projectUploading && <p className="text-xs text-[var(--text-muted)] animate-pulse mt-1">Uploading image locally...</p>}
-              </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">GitHub URL</label>
+              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Location Text</label>
               <input 
-                type="url" 
-                value={form.github_url}
-                onChange={(e) => setForm({ ...form, github_url: e.target.value })}
+                type="text" 
+                required
+                value={contactForm.location}
+                onChange={(e) => setContactForm({ ...contactForm, location: e.target.value })}
                 className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-                placeholder="https://github.com/..."
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Live Demo URL</label>
+              <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">Availability Status Badge</label>
               <input 
-                type="url" 
-                value={form.live_url}
-                onChange={(e) => setForm({ ...form, live_url: e.target.value })}
+                type="text" 
+                required
+                value={contactForm.availability_status}
+                onChange={(e) => setContactForm({ ...contactForm, availability_status: e.target.value })}
                 className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-[var(--text)] focus:outline-none focus:border-[#222222] dark:focus:border-[#f4f4f5] transition"
-                placeholder="https://..."
               />
             </div>
           </div>
 
           <button 
             type="submit" 
-            disabled={loading}
+            disabled={contactStatus.loading}
             className="w-full py-3 rounded-xl bg-[#222222] text-white hover:bg-black dark:bg-[#f4f4f5] dark:text-[#1d1f1e] dark:hover:bg-white font-bold text-sm transition-all duration-300 shadow-md dark:shadow-none disabled:opacity-50"
           >
-            {loading ? 'Saving Project...' : editingProjectId ? 'Update Project' : 'Add Project to Database'}
+            {contactStatus.loading ? 'Updating Contact Info...' : 'Save Contact Details'}
           </button>
         </form>
 
-        {/* Existing Projects Management List */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">Manage Existing Projects</h3>
-          {projects.length === 0 ? (
-            <p className="text-xs text-[var(--text-muted)] italic">No projects found in the database.</p>
+        {/* 7. Visitor Messages */}
+        <div id="messages" className="scroll-mt-28 bg-[var(--bg-card)] border border-[var(--border)] p-6 sm:p-8 rounded-2xl space-y-4 shadow-md dark:shadow-none">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold text-[var(--text)]">Visitor Messages</h2>
+            <span className="text-xs bg-[#222222]/5 text-[#222222] border border-[#222222]/20 dark:bg-[#f4f4f5]/10 dark:text-[#f4f4f5] dark:border-[#f4f4f5]/30 px-2.5 py-1 rounded-full font-mono font-semibold">
+              {messages.length} message{messages.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+
+          {messagesLoading ? (
+            <p className="text-xs text-[var(--text-muted)] italic">Loading messages...</p>
+          ) : messages.length === 0 ? (
+            <p className="text-xs text-[var(--text-muted)] italic">No messages yet. Messages sent via the contact form will appear here.</p>
           ) : (
-            <div className="space-y-3 max-h-72 overflow-y-auto pr-2">
-              {projects.map((proj) => (
-                <div key={proj.id} className="flex items-center justify-between bg-[var(--bg)] border border-[var(--border)] px-4 py-3 rounded-xl">
-                  <div>
-                    <h4 className="text-sm font-bold text-[var(--text)]">{proj.title}</h4>
-                    <p className="text-xs text-[var(--text-muted)] truncate max-w-xs">{proj.description}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => handleEditProjectClick(proj)} 
-                      className="px-3 py-1 rounded-lg bg-[#222222]/5 border border-[#222222]/20 text-[#222222] dark:bg-[#f4f4f5]/10 dark:border-[#f4f4f5]/30 dark:text-[#f4f4f5] text-xs font-bold hover:bg-[#222222] hover:text-white dark:hover:bg-[#f4f4f5] dark:hover:text-[#1d1f1e] transition"
-                    >
-                      Edit
-                    </button>
-                    <button 
-                      onClick={() => handleDeleteProject(proj.id)} 
-                      className="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition"
+            <div className="space-y-3 max-h-[480px] overflow-y-auto pr-2">
+              {messages.map((msg) => (
+                <div key={msg.id} className="bg-[var(--bg)] border border-[var(--border)] px-4 py-4 rounded-xl space-y-2 shadow-sm">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--text)]">{msg.name}</p>
+                      <p className="text-xs text-[var(--text-muted)] font-mono mt-0.5">{msg.email}</p>
+                      {msg.created_at && (
+                        <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{new Date(msg.created_at).toLocaleString()}</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleDeleteMessage(msg.id)}
+                      className="shrink-0 px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition"
                     >
                       Delete
                     </button>
                   </div>
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed border-t border-[var(--border)] pt-2">{msg.message}</p>
                 </div>
               ))}
             </div>

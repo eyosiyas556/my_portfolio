@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* ── Dark mode (60-30-10 rule: 60% #1d1f1e, 30% #292c2b, 10% #f4f4f5) ── */
 :root, html.dark {
   --bg:          #1d1f1e;   /* 60% Dominant canvas */
